@@ -1,5 +1,5 @@
 import React, {useState} from 'react';
-import {StyleSheet, TextInput, View} from 'react-native';
+import {StyleSheet, Text, TextInput, View} from 'react-native';
 import {Email, Lock, Person} from '../assets';
 
 type inputType = 'id' | 'password' | 'email';
@@ -9,6 +9,7 @@ interface UnderlinedInputProps {
   onChangeFn: (text: string) => void;
   placeholder?: string;
   type?: inputType;
+  errorMsg?: string;
 }
 
 const InputIcon = ({type}: {type: inputType}) => {
@@ -27,32 +28,42 @@ const UnderlinedInput = ({
   onChangeFn,
   placeholder,
   type,
+  errorMsg,
 }: UnderlinedInputProps) => {
   const [focus, setFocus] = useState(false);
   return (
-    <View
-      style={[
-        styles.container,
-        {borderColor: value || focus ? '#1833DB' : '#989A9F'},
-      ]}>
-      {type && <InputIcon type={type} />}
-      <TextInput
-        value={value}
-        style={styles.input}
-        autoFocus={type === 'id'}
-        placeholder={placeholder}
-        placeholderTextColor="#989A9F"
-        onChangeText={onChangeFn}
-        onFocus={() => {
-          setFocus(true);
-        }}
-        onBlur={() => {
-          setFocus(false);
-        }}
-        autoCapitalize="none"
-        secureTextEntry={type === 'password'}
-        inputMode={type === 'email' ? 'email' : 'none'}
-      />
+    <View style={{height: 60}}>
+      <View
+        style={[
+          styles.container,
+          {
+            borderColor: errorMsg
+              ? '#ff0000'
+              : value || focus
+              ? '#1833DB'
+              : '#989A9F',
+          },
+        ]}>
+        {type && <InputIcon type={type} />}
+        <TextInput
+          value={value}
+          style={styles.input}
+          autoFocus={type === 'id'}
+          placeholder={placeholder}
+          placeholderTextColor="#989A9F"
+          onChangeText={onChangeFn}
+          onFocus={() => {
+            setFocus(true);
+          }}
+          onBlur={() => {
+            setFocus(false);
+          }}
+          autoCapitalize="none"
+          secureTextEntry={type === 'password'}
+          inputMode={type === 'email' ? 'email' : 'none'}
+        />
+      </View>
+      <Text style={{color: '#ff0000', paddingLeft: 36}}>{errorMsg}</Text>
     </View>
   );
 };
@@ -60,6 +71,7 @@ const UnderlinedInput = ({
 const styles = StyleSheet.create({
   container: {
     width: '100%',
+
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
