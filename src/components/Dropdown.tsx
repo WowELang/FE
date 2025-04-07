@@ -28,7 +28,7 @@ const Dropdown = ({title, menuItems, value, handleFn}: DropdownProps) => {
   });
 
   return (
-    <View style={{gap: 5}}>
+    <View style={{gap: 5, position: 'relative'}}>
       <Pressable
         style={[
           styles.container,
@@ -95,6 +95,10 @@ const styles = StyleSheet.create({
     shadowOpacity: 1,
     shadowRadius: 24,
     elevation: 8,
+    position: 'absolute',
+    zIndex: 1,
+    width: '100%',
+    top: 62,
   },
   dropdownMenu: {
     borderRadius: 10,
