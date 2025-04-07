@@ -1,5 +1,6 @@
 export {default as ArrowDown} from './icon_arrow_down.svg';
 export {default as ArrowUp} from './icon_arrow_up.svg';
+export {default as Back} from './icon_back.svg';
 export {default as Check} from './icon_check.svg';
 export {default as Close} from './icon_close.svg';
 export {default as Email} from './icon_email.svg';
