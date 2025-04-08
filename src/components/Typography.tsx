@@ -1,11 +1,12 @@
 import React from 'react';
-import {Text} from 'react-native';
+import {StyleProp, Text, TextProps, TextStyle} from 'react-native';
 
-interface TypographyProps {
+interface TypographyProps extends TextProps {
   children: string;
   size: number;
   color?: string;
   bold?: boolean;
+  style?: StyleProp<TextStyle>;
 }
 
 const Typography = ({
@@ -13,14 +14,20 @@ const Typography = ({
   size,
   color = '#231815',
   bold,
+  style,
+  ...props
 }: TypographyProps) => {
   return (
     <Text
-      style={{
-        fontSize: size,
-        color: color,
-        fontWeight: bold ? 'bold' : 'regular',
-      }}>
+      style={[
+        {
+          fontSize: size,
+          color: color,
+          fontWeight: bold ? 'bold' : 'regular',
+        },
+        style,
+      ]}
+      {...props}>
       {children}
     </Text>
   );
