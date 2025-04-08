@@ -10,13 +10,13 @@ import {UserSignupReqDto} from '../../../types/dto/UserSignupReqDto';
 import ChoiceButton from './ChoiceButton';
 import DateInput from './DateInput';
 
-interface FormInputProps {
+interface IntroduceFormProps {
   field: keyof UserSignupReqDto;
   control: Control<UserSignupReqDto>;
   data: UserSignupReqDto;
 }
 
-const FormInput = ({field, control, data}: FormInputProps) => {
+const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
   return (
     <Controller
       key={field}
@@ -130,6 +130,7 @@ const FormInput = ({field, control, data}: FormInputProps) => {
                 )}
               </View>
             );
+
           default:
             return <></>;
         }
@@ -138,4 +139,4 @@ const FormInput = ({field, control, data}: FormInputProps) => {
   );
 };
 
-export default FormInput;
+export default IntroduceForm;
