@@ -9,7 +9,16 @@ interface ChoiceButtonProps {
   state: string | undefined;
   onChangeFn: (value: string) => void;
 }
-
+/**
+ *
+ * @param title 두 버튼의 메인 타이틀을 받습니다. [버튼1, 버튼2]
+ * @param subTitle 두 버튼의 서브 타이틀을 받습니다. [버튼1, 버튼2]
+ * @param icon 두 버튼의 아이콘을 받습니다. [버튼1, 버튼2]
+ * @param value 두 버튼의 value 값을 받습니다. [버튼1, 버튼2]
+ * @param state 선택한 버튼의 value를 저장할 변수를 받습니다.
+ * @param onChangeFn 버튼 선택 핸들링 함수를 받습니다.
+ * @returns
+ */
 const ChoiceButton = ({
   title,
   subTitle,
@@ -80,6 +89,7 @@ const styles = StyleSheet.create({
     borderWidth: 4,
     borderColor: '#D0D0D2',
     flexDirection: 'row',
+    alignItems: 'center',
   },
   selected: {
     borderColor: '#1833DB',
