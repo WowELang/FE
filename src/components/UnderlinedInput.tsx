@@ -1,10 +1,11 @@
 import React, {useState} from 'react';
-import {StyleSheet, Text, TextInput, View} from 'react-native';
+import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
 import {Email, Lock, Person} from '../assets';
+import Typography from './Typography';
 
 type inputType = 'id' | 'password' | 'email';
 
-interface UnderlinedInputProps {
+interface UnderlinedInputProps extends TextInputProps {
   value: string;
   onChangeFn: (text: string) => void;
   placeholder?: string;
@@ -63,21 +64,24 @@ const UnderlinedInput = ({
           inputMode={type === 'email' ? 'email' : 'none'}
         />
       </View>
-      <Text style={{color: '#ff0000', paddingLeft: 36}}>{errorMsg}</Text>
+      {
+        <Typography color="#ff0000" size={16} style={{paddingLeft: 36}}>
+          {errorMsg || ''}
+        </Typography>
+      }
     </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
-    width: '100%',
-
+    flex: 1,
     flexDirection: 'row',
     alignItems: 'center',
     borderBottomWidth: 1,
   },
   input: {
-    width: '100%',
+    flex: 1,
     lineHeight: 18,
     textAlignVertical: 'center',
     paddingVertical: 12,
