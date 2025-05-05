@@ -1,8 +1,9 @@
 import React from 'react';
 import {StyleProp, Text, TextProps, TextStyle} from 'react-native';
+import {colors} from '../constants/colors';
 
 interface TypographyProps extends TextProps {
-  children: string;
+  children: string | string[];
   size: number;
   color?: string;
   bold?: boolean;
@@ -12,7 +13,7 @@ interface TypographyProps extends TextProps {
 const Typography = ({
   children,
   size,
-  color = '#231815',
+  color = colors.black.primary,
   bold,
   style,
   ...props
