@@ -1,6 +1,7 @@
 import React, {useState} from 'react';
 import {StyleSheet, TextInput, TextInputProps, View} from 'react-native';
 import {Email, Lock, Person} from '../assets';
+import {colors} from '../constants/colors';
 import Typography from './Typography';
 
 type inputType = 'id' | 'password' | 'email';
@@ -39,17 +40,16 @@ const UnderlinedInput = ({
           styles.container,
           {
             borderColor: errorMsg
-              ? '#ff0000'
+              ? colors.red
               : value || focus
-              ? '#1833DB'
-              : '#989A9F',
+              ? colors.blue.primary
+              : colors.gray.primary,
           },
         ]}>
         {type && <InputIcon type={type} />}
         <TextInput
           value={value}
           style={styles.input}
-          autoFocus={type === 'id'}
           placeholder={placeholder}
           placeholderTextColor="#989A9F"
           onChangeText={onChangeFn}
@@ -61,11 +61,11 @@ const UnderlinedInput = ({
           }}
           autoCapitalize="none"
           secureTextEntry={type === 'password'}
-          inputMode={type === 'email' ? 'email' : 'none'}
+          inputMode={type === 'email' ? 'email' : 'text'}
         />
       </View>
       {
-        <Typography color="#ff0000" size={16} style={{paddingLeft: 36}}>
+        <Typography color={colors.red} size={16} style={{paddingLeft: 36}}>
           {errorMsg || ''}
         </Typography>
       }
