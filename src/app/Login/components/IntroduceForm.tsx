@@ -26,7 +26,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
         switch (field) {
           case 'userType':
             return (
-              <View style={{marginBottom: 168}}>
+              <View>
                 <ChoiceButton
                   title={['유학생 튜티', '재학생 튜터']}
                   subTitle={['TUTEE', 'TUTOR']}
@@ -39,7 +39,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
             );
           case 'country':
             return (
-              <View style={{gap: 44, marginBottom: 315}}>
+              <View style={{gap: 44}}>
                 <Typography size={28} color="#1833DB" bold>
                   국적
                 </Typography>
@@ -69,7 +69,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
             );
           case 'gender':
             return (
-              <View style={{marginBottom: 168}}>
+              <View>
                 <ChoiceButton
                   title={['여성', '남성']}
                   value={['FEMALE', 'MALE']}
@@ -80,7 +80,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
             );
           case 'birthday':
             return (
-              <View style={{gap: 44, marginBottom: 315}}>
+              <View style={{gap: 44}}>
                 <Typography size={28} color="#1833DB" bold>
                   생년월일
                 </Typography>
@@ -89,7 +89,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
             );
           case 'major':
             return (
-              <View style={{gap: 44, marginBottom: 315}}>
+              <View style={{gap: 44}}>
                 <Typography size={28} color="#1833DB" bold>
                   전공
                 </Typography>
@@ -123,7 +123,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
                       borderWidth: value === 'none' ? 2 : 1,
                     }}
                     onPress={() => {
-                      onChange('none');
+                      onChange(value ? '' : 'none');
                     }}>
                     <Typography size={16}>전공이 없어요</Typography>
                   </Pressable>
