@@ -16,7 +16,7 @@ const ProgressBar = ({progress}: ProgressBarProps) => {
       duration: 300,
       useNativeDriver: false,
     }).start();
-  }, [progress]);
+  }, [progress, animatedWidth]);
 
   const widthInterpolated = animatedWidth.interpolate({
     inputRange: [0, 1],
