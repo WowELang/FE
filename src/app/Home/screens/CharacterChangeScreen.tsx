@@ -4,11 +4,9 @@ import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
 import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
-import Profile, {
-  characterColorType,
-  characterFaceType,
-} from '../../../components/Profile';
+import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
 import {HomeStackParamList} from '../../../navigators/HomeNavigator';
 
@@ -22,22 +20,7 @@ const CharacterChangeScreen = ({
   route,
 }: CharacterChangeScreenProps) => {
   const type = route.params.type;
-  const characterColors: characterColorType[] = [
-    'pink',
-    'green',
-    'yellow',
-    'blue',
-    'brown',
-    'red',
-  ];
-  const characterFaces: characterFaceType[] = [
-    'normal',
-    'narrow',
-    'wide',
-    'single',
-    'triangle',
-    'none',
-  ];
+
   const [selectedColor, setSelectedColor] = useState('');
   const [selectedFace, setSelectedFace] = useState('');
   return (
@@ -62,7 +45,7 @@ const CharacterChangeScreen = ({
           gap: 15,
         }}>
         {type === 'color'
-          ? characterColors.map(item => (
+          ? CHARACTERCOLOR.map(item => (
               <Pressable
                 onPress={() => {
                   setSelectedColor(item);
@@ -75,7 +58,7 @@ const CharacterChangeScreen = ({
                 />
               </Pressable>
             ))
-          : characterFaces.map(item => (
+          : CHARACTERFACE.map(item => (
               <Pressable
                 onPress={() => {
                   setSelectedFace(item);
