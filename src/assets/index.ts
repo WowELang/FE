@@ -26,3 +26,4 @@ export {default as Native} from './icon_native.svg';
 export {default as Person} from './icon_person.svg';
 export {default as Setting} from './icon_setting.svg';
 export {default as Sun} from './icon_sun.svg';
+export {default as HongikLogo} from './logo_hongik.svg';
