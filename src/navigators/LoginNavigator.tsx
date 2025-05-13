@@ -1,5 +1,6 @@
 import {createStackNavigator} from '@react-navigation/stack';
 import React from 'react';
+import {Keyboard, TouchableWithoutFeedback} from 'react-native';
 import InterestScreen from '../app/Login/screens/InterestScreen';
 import LoginScreen from '../app/Login/screens/LoginScreen';
 import NicknameScreen from '../app/Login/screens/NicknameScreen';
@@ -24,17 +25,22 @@ export type LoginStackParamList = {
 const LoginStack = createStackNavigator<LoginStackParamList>();
 const LoginNavigator = () => {
   return (
-    <LoginStack.Navigator screenOptions={{headerShown: false}}>
-      <LoginStack.Screen name={'Login'} component={LoginScreen} />
-      <LoginStack.Screen name={'Register'} component={RegisterScreen} />
-      <LoginStack.Screen name={'Terms'} component={TermsScreen} />
-      <LoginStack.Screen name={'Splash'} component={SplashScreen} />
-      <LoginStack.Screen name={'Interest'} component={InterestScreen} />
-      <LoginStack.Screen name={'SelecetColor'} component={SelectColorScreen} />
-      <LoginStack.Screen name={'SelecetFace'} component={SelectFaceScreen} />
-      <LoginStack.Screen name={'Nickname'} component={NicknameScreen} />
-      <LoginStack.Screen name={'Start'} component={StartScreen} />
-    </LoginStack.Navigator>
+    <TouchableWithoutFeedback style={{flex: 1}} onPress={Keyboard.dismiss}>
+      <LoginStack.Navigator screenOptions={{headerShown: false}}>
+        <LoginStack.Screen name={'Login'} component={LoginScreen} />
+        <LoginStack.Screen name={'Register'} component={RegisterScreen} />
+        <LoginStack.Screen name={'Terms'} component={TermsScreen} />
+        <LoginStack.Screen name={'Splash'} component={SplashScreen} />
+        <LoginStack.Screen name={'Interest'} component={InterestScreen} />
+        <LoginStack.Screen
+          name={'SelecetColor'}
+          component={SelectColorScreen}
+        />
+        <LoginStack.Screen name={'SelecetFace'} component={SelectFaceScreen} />
+        <LoginStack.Screen name={'Nickname'} component={NicknameScreen} />
+        <LoginStack.Screen name={'Start'} component={StartScreen} />
+      </LoginStack.Navigator>
+    </TouchableWithoutFeedback>
   );
 };
 
