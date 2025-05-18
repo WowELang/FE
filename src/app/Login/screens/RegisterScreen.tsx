@@ -67,9 +67,7 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
         if (gestureState.dx > SWIPE_THRESHOLD) {
           if (stepRef.current === 0) {
             navigation.goBack();
-            console.log(stepRef.current);
           } else {
-            console.log(stepRef.current);
             resetField(fieldList[stepRef.current]);
             if (fieldList[stepRef.current] === 'loginId')
               resetField(fieldList[stepRef.current + 1]);
@@ -102,7 +100,6 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
             onPress={() => {
               if (step === 0) navigation.goBack();
               else {
-                console.log(step);
                 resetField(fieldList[step]);
                 if (fieldList[step] === 'loginId')
                   resetField(fieldList[step + 1]);

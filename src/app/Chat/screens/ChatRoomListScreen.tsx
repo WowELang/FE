@@ -34,7 +34,6 @@ const ChatRoomListScreen = () => {
         }}
         onPressFn={() => {
           navigation.navigate('Chat', {roomId: 'af'});
-          console.log('hi');
         }}
       />
       <Divider color={colors.gray.secondary} />
