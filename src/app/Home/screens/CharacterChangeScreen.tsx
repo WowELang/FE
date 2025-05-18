@@ -47,6 +47,7 @@ const CharacterChangeScreen = ({
         {type === 'color'
           ? CHARACTERCOLOR.map(item => (
               <Pressable
+                key={item}
                 onPress={() => {
                   setSelectedColor(item);
                 }}>
@@ -60,6 +61,7 @@ const CharacterChangeScreen = ({
             ))
           : CHARACTERFACE.map(item => (
               <Pressable
+                key={item}
                 onPress={() => {
                   setSelectedFace(item);
                 }}>

@@ -1,14 +1,15 @@
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import BoardScreen from '../app/Board/screens/BoardScreen';
-import ChatScreen from '../app/Chat/screens/ChatScreen';
+
 import SettingScreen from '../app/Settings/SettingScreen';
 import {Board, Chat, Home, Setting} from '../assets';
+import ChatNavigator from './ChatNavigator';
 import HomeNavigator from './HomeNavigator';
 
 export type RootStackParamList = {
   HomeNav: undefined;
-  Chat: undefined;
+  ChatNav: undefined;
   Board: undefined;
   Settings: undefined;
 };
@@ -37,8 +38,8 @@ const RootNavigator = () => {
         }}
       />
       <RootBottomTab.Screen
-        name="Chat"
-        component={ChatScreen}
+        name="ChatNav"
+        component={ChatNavigator}
         options={{
           tabBarIcon: () => <Chat fill="#1833DB" />,
           tabBarLabel: 'Chat',

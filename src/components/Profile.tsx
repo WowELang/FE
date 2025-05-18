@@ -33,52 +33,55 @@ interface ProfileProps {
 
 const Profile = ({type, color, size, active}: ProfileProps) => {
   return (
-    <View
-      style={[
-        styles.container,
-        {
-          width: size,
-          height: size,
-          borderRadius: size,
-          backgroundColor: active ? colors.blue.primary : colors.gray.secondary,
-        },
-      ]}>
-      {type === 'normal' && (
-        <NormalStandingBin
-          fill={colors.character[color]}
-          style={styles.character}
-          width={size * 0.66}
-          height={size * 0.95}
-        />
-      )}
-      {type === 'narrow' && (
-        <NarrowStandingBin
-          fill={colors.character[color]}
-          style={styles.character}
-          width={size * 0.66}
-        />
-      )}
-      {type === 'wide' && (
-        <WideStandingBin
-          fill={colors.character[color]}
-          style={styles.character}
-          width={size * 0.66}
-        />
-      )}
-      {type === 'single' && (
-        <SingleStandingBin
-          fill={colors.character[color]}
-          style={styles.character}
-          width={size * 0.66}
-        />
-      )}
-      {type === 'triangle' && (
-        <TriangleStandingBin
-          fill={colors.character[color]}
-          style={styles.character}
-          width={size * 0.66}
-        />
-      )}
+    <View>
+      <View
+        style={[
+          styles.container,
+          {
+            width: size,
+            height: size,
+            borderRadius: size,
+            backgroundColor: active
+              ? colors.blue.primary
+              : colors.gray.secondary,
+          },
+        ]}>
+        {type === 'normal' && (
+          <NormalStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+        {type === 'narrow' && (
+          <NarrowStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+        {type === 'wide' && (
+          <WideStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+        {type === 'single' && (
+          <SingleStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+        {type === 'triangle' && (
+          <TriangleStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+      </View>
     </View>
   );
 };
@@ -89,7 +92,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     overflow: 'hidden',
   },
-  character: {position: 'absolute', bottom: -13},
 });
 
 export default Profile;
