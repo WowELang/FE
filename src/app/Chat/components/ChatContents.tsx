@@ -1,56 +1,57 @@
 import React, {useState} from 'react';
-import {FlatList} from 'react-native';
-import Typography from '../../../components/Typography';
-import {colors} from '../../../constants/colors';
+import {FlatList, Keyboard} from 'react-native';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {useMessageStore} from '../utils/messageStore';
 import Message from './Message';
 
 interface ChatContentsProps {
   onContentPress: () => void;
+  messages: ChatMessageDto[];
 }
 
-const ChatContents = ({onContentPress}: ChatContentsProps) => {
+const ChatContents = ({onContentPress, messages}: ChatContentsProps) => {
   const userId = 'UserId';
-  const [messages, setMessages] = useState<ChatMessageDto[]>([].reverse());
+  const removeCorrectMessage = useMessageStore(state => state.removeMessage);
+  const [isScrolling, setIsScrolling] = useState(false);
+
+  const [skipTouch, setSkipTouch] = useState(false);
+
+  const handleScrollBegin = () => {
+    setIsScrolling(true);
+  };
+  const handleScrollEnd = () => {
+    setIsScrolling(false);
+  };
+
+  const handleTouchEnd = () => {
+    if (!isScrolling && !skipTouch && !Keyboard.isVisible()) {
+      onContentPress();
+      removeCorrectMessage();
+    }
+    setSkipTouch(false);
+  };
 
   return (
     <FlatList
-      style={{flex: 1}}
       contentContainerStyle={{paddingTop: 10, flexGrow: 1}}
       inverted
-      onEndReached={() => {}}
-      onTouchStart={onContentPress}
+      onScrollBeginDrag={handleScrollBegin}
+      onScrollEndDrag={handleScrollEnd}
+      onTouchEnd={handleTouchEnd}
       data={messages}
       renderItem={({item, index}) => {
         const isHead =
           !messages[index + 1] ||
           messages[index + 1].senderId !== item.senderId;
-        const messageDate = new Date(item.createdAt);
-        const prevMessageDate =
-          messages[index + 1] && new Date(messages[index + 1].createdAt);
-        const isSameDate =
-          !messages[index + 1] ||
-          prevMessageDate.getFullYear() !== messageDate.getFullYear() ||
-          prevMessageDate.getMonth() !== messageDate.getMonth() ||
-          prevMessageDate.getDate() !== messageDate.getDate();
 
         return (
-          <>
-            <Message
-              key={item.id}
-              isMine={item.senderId === userId}
-              head={isHead}
-              text={item.content}
-            />
-            {isSameDate && (
-              <Typography
-                style={{alignSelf: 'center', marginTop: 18, marginBottom: 10}}
-                size={12}
-                color={colors.gray.primary}>{`${messageDate.getFullYear()}년 ${
-                messageDate.getMonth() + 1
-              }월 ${messageDate.getDate()}일`}</Typography>
-            )}
-          </>
+          <Message
+            key={item.id}
+            isMine={item.senderId === userId}
+            head={isHead}
+            message={item}
+            onLongPress={() => setSkipTouch(true)}
+          />
         );
       }}
     />

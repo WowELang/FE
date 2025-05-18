@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {
   Modal,
   Pressable,
@@ -12,15 +12,29 @@ import {Next, Picture} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
+import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {useMessageStore} from '../utils/messageStore';
 
 interface ChatInputProps {
   isMenuOpen: boolean;
   closeMenu: () => void;
   toggleMenu: () => void;
+  addMessage: (message: ChatMessageDto) => void;
 }
 
-const ChatInput = ({isMenuOpen, closeMenu, toggleMenu}: ChatInputProps) => {
+const ChatInput = ({
+  isMenuOpen,
+  closeMenu,
+  toggleMenu,
+  addMessage,
+}: ChatInputProps) => {
+  const {correctMessage} = useMessageStore(state => state);
+  const [input, setInput] = useState('');
   const [pictureModalOpen, setPictureModalOpen] = useState(false);
+
+  useEffect(() => {
+    setInput(correctMessage ? correctMessage.content : '');
+  }, [correctMessage]);
 
   return (
     <View style={styles.container}>
@@ -82,12 +96,32 @@ const ChatInput = ({isMenuOpen, closeMenu, toggleMenu}: ChatInputProps) => {
         <View style={styles.divider} />
         <TextInput
           style={styles.input}
+          value={input}
+          onChangeText={text => {
+            setInput(text);
+          }}
           multiline
           placeholder="채팅을 입력하세요."
           placeholderTextColor={colors.gray.primary}
           onFocus={closeMenu}
         />
-        <Next fill={colors.gray.primary} width={24} height={24} />
+        <Pressable
+          onPress={() => {
+            addMessage({
+              id: 'string122',
+              roomId: 'string',
+              senderId: 'UserId',
+              type: 'CORRECTION',
+              content: '안녕반가워어쩌구저쩌구',
+              s3Key: 'string',
+              originalMessageText: 'string',
+              correctedText: 'string',
+              createdAt: '2025-05-01',
+              deleted: false,
+            });
+          }}>
+          <Next fill={colors.gray.primary} width={24} height={24} />
+        </Pressable>
       </View>
       {isMenuOpen && (
         <Pressable

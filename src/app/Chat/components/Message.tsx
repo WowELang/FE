@@ -1,16 +1,25 @@
 import React from 'react';
-import {StyleSheet, View} from 'react-native';
+import {Pressable, StyleSheet, View} from 'react-native';
+import Divider from '../../../components/Divider';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
+import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {useMessageStore} from '../utils/messageStore';
 
 type MessageProps = {
   isMine?: boolean;
   head?: boolean;
-  text: string;
+  message: ChatMessageDto;
+  onLongPress: () => void;
 };
 
-const Message = ({isMine, head, text}: MessageProps) => {
+const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
+  const correctMessage = useMessageStore(state => state.correctMessage);
+  const addCorrectMessage = useMessageStore(state => state.addCorrectMessage);
+
+  const correctState = correctMessage?.id === message.id;
+
   return (
     <View
       style={[
@@ -25,15 +34,51 @@ const Message = ({isMine, head, text}: MessageProps) => {
           </Typography>
         </View>
       )}
-      <View
-        style={[
-          styles.messageBox,
-          {
-            borderTopLeftRadius: !isMine && head ? 0 : 20,
-            borderBottomRightRadius: isMine && head ? 0 : 20,
-          },
-        ]}>
-        <Typography size={12}>{text}</Typography>
+      <View>
+        <Pressable
+          onLongPress={() => {
+            !isMine && addCorrectMessage(message);
+            onLongPress();
+          }}
+          style={[
+            styles.messageBox,
+            {
+              borderTopLeftRadius: !isMine && head ? 0 : 20,
+              borderBottomRightRadius: isMine && head ? 0 : 20,
+              backgroundColor:
+                correctState || message.type === 'CORRECTION'
+                  ? colors.blue.secondary
+                  : colors.white,
+            },
+            (correctState || message.type === 'CORRECTION') && {
+              borderWidth: 1,
+              borderColor: colors.blue.primary,
+            },
+          ]}>
+          {message.type === 'CORRECTION' && correctMessage && (
+            <View>
+              <Typography size={10} bold style={{marginBottom: 3}}>
+                의문스러운 와우의 채팅 교정
+              </Typography>
+              <Typography size={10} color={colors.gray.primary}>
+                {correctMessage.content}
+              </Typography>
+              <Divider
+                color={colors.gray.secondary}
+                style={{marginVertical: 10}}
+              />
+            </View>
+          )}
+          <Typography size={12}>{message.content}</Typography>
+        </Pressable>
+        {correctState && (
+          <Pressable
+            style={{marginLeft: 40, marginTop: 5, alignItems: 'center'}}>
+            <Typography size={12} color={colors.blue.primary}>
+              교정 중
+            </Typography>
+          </Pressable>
+        )}
       </View>
     </View>
   );
@@ -48,7 +93,6 @@ const styles = StyleSheet.create({
     marginLeft: 40,
     paddingHorizontal: 14,
     paddingVertical: 17,
-    backgroundColor: colors.white,
     borderTopRightRadius: 20,
     borderBottomLeftRadius: 20,
     maxWidth: 240,
