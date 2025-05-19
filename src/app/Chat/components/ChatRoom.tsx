@@ -18,8 +18,10 @@ const getLastTime = (isoTime: string) => {
     return `${lastDay.getHours()}:${lastDay.getMinutes()}`;
   else {
     return lastDay.getFullYear() === today.getFullYear()
-      ? `${lastDay.getMonth()}/${lastDay.getDate()}`
-      : `${lastDay.getFullYear()}/${lastDay.getMonth()}/${lastDay.getDate()}`;
+      ? `${lastDay.getMonth() + 1}/${lastDay.getDate()}`
+      : `${lastDay.getFullYear()}/${
+          lastDay.getMonth() + 1
+        }/${lastDay.getDate()}`;
   }
 };
 
