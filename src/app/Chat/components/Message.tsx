@@ -30,7 +30,7 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
           <Profile type="normal" color="pink" size={36} />
           <Typography size={12} bold>
-            의문스러운 와우
+            맛있는 돈카츠
           </Typography>
         </View>
       )}
@@ -55,13 +55,13 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
               borderColor: colors.blue.primary,
             },
           ]}>
-          {message.type === 'CORRECTION' && correctMessage && (
+          {message.type === 'CORRECTION' && (
             <View>
               <Typography size={10} bold style={{marginBottom: 3}}>
                 의문스러운 와우의 채팅 교정
               </Typography>
               <Typography size={10} color={colors.gray.primary}>
-                {correctMessage.content}
+                {message.content}
               </Typography>
               <Divider
                 color={colors.gray.secondary}
@@ -69,7 +69,17 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
               />
             </View>
           )}
-          <Typography size={12}>{message.content}</Typography>
+          <Typography
+            size={12}
+            color={
+              message.type === 'CORRECTION'
+                ? colors.blue.primary
+                : colors.black.primary
+            }>
+            {message.type === 'CORRECTION'
+              ? message.correctedText
+              : message.content}
+          </Typography>
         </Pressable>
         {correctState && (
           <Pressable

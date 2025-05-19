@@ -10,7 +10,7 @@ import {
 interface ConfirmButtonProps {
   title: string;
   handlerFn: (event: GestureResponderEvent) => void;
-  active: boolean;
+  active?: boolean;
   style?: StyleProp<ViewStyle>;
 }
 
@@ -30,6 +30,8 @@ const ConfirmButton = ({
           borderRadius: 40,
           justifyContent: 'center',
           alignItems: 'center',
+          paddingVertical: 15,
+          paddingHorizontal: 57,
         },
         style,
       ]}
