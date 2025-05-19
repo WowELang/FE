@@ -7,7 +7,6 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
-// import {TextInput} from 'react-native-gesture-handler'; // TextInput from react-native is preferred
 import {Next, Picture} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
@@ -28,7 +27,7 @@ const ChatInput = ({
   toggleMenu,
   addMessage,
 }: ChatInputProps) => {
-  const {correctMessage} = useMessageStore(state => state);
+  const {correctMessage, removeMessage} = useMessageStore(state => state);
   const [input, setInput] = useState('');
   const [pictureModalOpen, setPictureModalOpen] = useState(false);
 
@@ -91,7 +90,7 @@ const ChatInput = ({
       </Modal>
       <View style={styles.contentWrapper}>
         <Pressable onPress={toggleMenu}>
-          <Profile type="normal" color="blue" size={24} />
+          <Profile type="normal" color="red" size={24} />
         </Pressable>
         <View style={styles.divider} />
         <TextInput
@@ -107,18 +106,46 @@ const ChatInput = ({
         />
         <Pressable
           onPress={() => {
-            addMessage({
-              id: 'string122',
-              roomId: 'string',
-              senderId: 'UserId',
-              type: 'CORRECTION',
-              content: '안녕반가워어쩌구저쩌구',
-              s3Key: 'string',
-              originalMessageText: 'string',
-              correctedText: 'string',
-              createdAt: '2025-05-01',
-              deleted: false,
-            });
+            correctMessage
+              ? addMessage({
+                  id: 'string125',
+                  roomId: 'string',
+                  senderId: 'UserId',
+                  type: 'CORRECTION',
+                  content: '안냥 홍냥아!!!!!',
+                  s3Key: 'string',
+                  originalMessageText: 'string',
+                  correctedText: '안녕 홍냥아!!!!!',
+                  createdAt: '2025-05-01',
+                  deleted: false,
+                })
+              : addMessage({
+                  id: 'string122',
+                  roomId: 'string',
+                  senderId: 'UserId',
+                  type: 'TEXT',
+                  content: '방가방가~~',
+                  s3Key: 'string',
+                  originalMessageText: 'string',
+                  correctedText: 'string',
+                  createdAt: '2025-05-01',
+                  deleted: false,
+                });
+            if (correctMessage) removeMessage();
+            setInput('');
+            if (input === '이게 올바른 표현이야!')
+              addMessage({
+                id: 'string1222',
+                roomId: 'string',
+                senderId: 'UserId',
+                type: 'TEXT',
+                content: '이게 올바른 표현이야!',
+                s3Key: 'string',
+                originalMessageText: 'string',
+                correctedText: 'string',
+                createdAt: '2025-05-18',
+                deleted: false,
+              });
           }}>
           <Next fill={colors.gray.primary} width={24} height={24} />
         </Pressable>
@@ -163,8 +190,7 @@ const styles = StyleSheet.create({
   input: {
     flex: 1,
     fontSize: 12,
-
-    padding: 0,
+    paddingBottom: 5,
   },
   pictureBtn: {
     flexDirection: 'row',
