@@ -6,7 +6,7 @@ import Typography from './Typography';
 interface TagProps {
   title: string;
   selected: boolean;
-  onPressFn: () => void;
+  onPressFn?: () => void;
 }
 
 const Tag = ({title, selected, onPressFn}: TagProps) => {
