@@ -2,14 +2,18 @@ import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 import React from 'react';
 import BoardScreen from '../app/Board/screens/BoardScreen';
 
+import {NavigatorScreenParams} from '@react-navigation/native';
+import FriendsScreens from '../app/Friends/screens/FriendsScreens';
 import SettingScreen from '../app/Settings/SettingScreen';
-import {Board, Chat, Home, Setting} from '../assets';
-import ChatNavigator from './ChatNavigator';
-import HomeNavigator from './HomeNavigator';
+import {Board, Chat, Friends, Home, Setting} from '../assets';
+import {colors} from '../constants/colors';
+import ChatNavigator, {ChatstackParamList} from './ChatNavigator';
+import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 
 export type RootStackParamList = {
-  HomeNav: undefined;
-  ChatNav: undefined;
+  HomeNav: NavigatorScreenParams<HomeStackParamList>;
+  ChatNav: NavigatorScreenParams<ChatstackParamList>;
+  Friends: undefined;
   Board: undefined;
   Settings: undefined;
 };
@@ -19,61 +23,64 @@ const RootBottomTab = createBottomTabNavigator<RootStackParamList>();
 const RootNavigator = () => {
   return (
     <RootBottomTab.Navigator
-      screenOptions={{
+      screenOptions={({route}) => ({
+        tabBarIcon: ({color}) => {
+          switch (route.name) {
+            case 'HomeNav':
+              return <Home fill={color} />;
+            case 'ChatNav':
+              return <Chat fill={color} />;
+            case 'Friends':
+              return <Friends fill={color} />;
+            case 'Board':
+              return <Board fill={color} />;
+            case 'Settings':
+              return <Setting fill={color} />;
+          }
+        },
         headerShown: false,
         tabBarStyle: {paddingBottom: 0, height: 80},
         tabBarIconStyle: {marginTop: 11},
-      }}>
+        tabBarActiveTintColor: colors.blue.primary,
+        tabBarInactiveTintColor: colors.gray.primary,
+        tabBarLabelStyle: {
+          fontWeight: 'bold',
+          fontSize: 12,
+        },
+      })}>
       <RootBottomTab.Screen
         name="HomeNav"
         component={HomeNavigator}
         options={{
-          tabBarIcon: () => <Home fill="#1833DB" />,
           tabBarLabel: 'Home',
-          tabBarLabelStyle: {
-            color: '#1833DB',
-            fontWeight: 'bold',
-            fontSize: 12,
-          },
         }}
       />
       <RootBottomTab.Screen
         name="ChatNav"
         component={ChatNavigator}
         options={{
-          tabBarIcon: () => <Chat fill="#1833DB" />,
           tabBarLabel: 'Chat',
-          tabBarLabelStyle: {
-            color: '#1833DB',
-            fontWeight: 'bold',
-            fontSize: 12,
-          },
+        }}
+      />
+      <RootBottomTab.Screen
+        name="Friends"
+        component={FriendsScreens}
+        options={{
+          tabBarLabel: 'Friends',
         }}
       />
       <RootBottomTab.Screen
         name="Board"
         component={BoardScreen}
         options={{
-          tabBarIcon: () => <Board fill="#1833DB" />,
           tabBarLabel: 'Board',
-          tabBarLabelStyle: {
-            color: '#1833DB',
-            fontWeight: 'bold',
-            fontSize: 12,
-          },
         }}
       />
       <RootBottomTab.Screen
         name="Settings"
         component={SettingScreen}
         options={{
-          tabBarIcon: () => <Setting fill="#1833DB" />,
           tabBarLabel: 'Settings',
-          tabBarLabelStyle: {
-            color: '#1833DB',
-            fontWeight: 'bold',
-            fontSize: 12,
-          },
         }}
       />
     </RootBottomTab.Navigator>
