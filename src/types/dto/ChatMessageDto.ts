@@ -7,7 +7,7 @@ export interface ChatMessageDto {
   type: MessageType;
   content: string;
   s3Key: string | null;
-  originalMessageText: string | null;
+  originalMessage: string | null;
   correctedText: string | null;
   createdAt: string;
   deleted: boolean;

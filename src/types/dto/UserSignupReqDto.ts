@@ -11,5 +11,4 @@ export interface UserSignupReqDto {
   major: string;
   gender: GenderType;
   userType: UserType;
-  country: string;
 }

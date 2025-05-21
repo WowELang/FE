@@ -1,5 +1,5 @@
 import {create} from 'zustand';
-import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {ChatMessageDto} from '../types/dto/ChatMessageDto';
 
 interface MessageStore {
   correctMessage: ChatMessageDto | undefined;

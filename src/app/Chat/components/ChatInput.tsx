@@ -11,11 +11,14 @@ import {Next, Picture} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
+import {useStompClient} from '../../../scoket';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
-import {useMessageStore} from '../utils/messageStore';
+import {useMessageStore} from '../../../utils/messageStore';
+import {useUserStore} from '../../../utils/userStore';
 
 interface ChatInputProps {
   isMenuOpen: boolean;
+  roomId: string;
   closeMenu: () => void;
   toggleMenu: () => void;
   addMessage: (message: ChatMessageDto) => void;
@@ -23,6 +26,7 @@ interface ChatInputProps {
 
 const ChatInput = ({
   isMenuOpen,
+  roomId,
   closeMenu,
   toggleMenu,
   addMessage,
@@ -30,6 +34,23 @@ const ChatInput = ({
   const {correctMessage, removeMessage} = useMessageStore(state => state);
   const [input, setInput] = useState('');
   const [pictureModalOpen, setPictureModalOpen] = useState(false);
+
+  const stompClient = useStompClient();
+  const {userId} = useUserStore();
+
+  function sendMessage(messagePayload) {
+    // messagePayload는 아래 형식 중 하나
+    if (stompClient && stompClient.active && roomId) {
+      stompClient.publish({
+        destination: `/app/chat.send.${roomId}`, // 메시지를 보낼 목적지 주소
+        headers: {'X-User-Id': userId}, // 필요시 추가 헤더
+        body: JSON.stringify(messagePayload),
+      });
+      console.log('Sent message:', messagePayload);
+    } else {
+      console.error('STOMP client not active or no room selected.');
+    }
+  }
 
   useEffect(() => {
     setInput(correctMessage ? correctMessage.content : '');
@@ -106,46 +127,13 @@ const ChatInput = ({
         />
         <Pressable
           onPress={() => {
-            correctMessage
-              ? addMessage({
-                  id: 'string125',
-                  roomId: 'string',
-                  senderId: 'UserId',
-                  type: 'CORRECTION',
-                  content: '안냥 홍냥아!!!!!',
-                  s3Key: 'string',
-                  originalMessageText: 'string',
-                  correctedText: '안녕 홍냥아!!!!!',
-                  createdAt: '2025-05-01',
-                  deleted: false,
-                })
-              : addMessage({
-                  id: 'string122',
-                  roomId: 'string',
-                  senderId: 'UserId',
-                  type: 'TEXT',
-                  content: '방가방가~~',
-                  s3Key: 'string',
-                  originalMessageText: 'string',
-                  correctedText: 'string',
-                  createdAt: '2025-05-01',
-                  deleted: false,
-                });
-            if (correctMessage) removeMessage();
+            sendMessage({
+              type: correctMessage ? 'CORRECTION' : 'TEXT',
+              content: input,
+              originalMessage: correctMessage?.content,
+            });
             setInput('');
-            if (input === '이게 올바른 표현이야!')
-              addMessage({
-                id: 'string1222',
-                roomId: 'string',
-                senderId: 'UserId',
-                type: 'TEXT',
-                content: '이게 올바른 표현이야!',
-                s3Key: 'string',
-                originalMessageText: 'string',
-                correctedText: 'string',
-                createdAt: '2025-05-18',
-                deleted: false,
-              });
+            removeMessage();
           }}>
           <Next fill={colors.gray.primary} width={24} height={24} />
         </Pressable>

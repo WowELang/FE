@@ -12,10 +12,18 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import LanguageScreen from './src/app/Login/screens/LanguageScreen';
 import LoginNavigator from './src/navigators/LoginNavigator';
 import RootNavigator from './src/navigators/RootNavigator';
+import {useUserStore} from './src/utils/userStore';
+
+const TextEncodingPolyfill = require('text-encoding');
+
+Object.assign('global', {
+  TextEncoder: TextEncodingPolyfill.TextEncoder,
+  TextDecoder: TextEncodingPolyfill.TextDecoder,
+});
 
 function App(): React.JSX.Element {
   const languageChosen = true;
-  const isLogined = true;
+  const {isLoggedin} = useUserStore();
   return (
     <SafeAreaProvider>
       <KeyboardAvoidingView
@@ -24,7 +32,7 @@ function App(): React.JSX.Element {
         <SafeAreaView style={{flex: 1}}>
           <NavigationContainer>
             {languageChosen ? (
-              isLogined ? (
+              isLoggedin ? (
                 <RootNavigator />
               ) : (
                 <LoginNavigator />
