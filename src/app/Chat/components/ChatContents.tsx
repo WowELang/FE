@@ -1,7 +1,9 @@
 import React, {useState} from 'react';
 import {FlatList, Keyboard} from 'react-native';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
-import {useMessageStore} from '../utils/messageStore';
+
+import {useMessageStore} from '../../../utils/messageStore';
+import {useUserStore} from '../../../utils/userStore';
 import Message from './Message';
 
 interface ChatContentsProps {
@@ -10,7 +12,7 @@ interface ChatContentsProps {
 }
 
 const ChatContents = ({onContentPress, messages}: ChatContentsProps) => {
-  const userId = 'UserId';
+  const {userId} = useUserStore();
   const removeCorrectMessage = useMessageStore(state => state.removeMessage);
   const [isScrolling, setIsScrolling] = useState(false);
 

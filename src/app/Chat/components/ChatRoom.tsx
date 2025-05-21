@@ -47,7 +47,7 @@ const ChatRoom = ({
           </Typography>
         </View>
         <Typography size={12} numberOfLines={1}>
-          {lastMessage.content}
+          {lastMessage?.content}
         </Typography>
       </View>
     </Pressable>

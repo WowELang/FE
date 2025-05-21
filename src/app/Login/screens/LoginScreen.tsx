@@ -1,18 +1,25 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {View} from 'react-native';
+import {postLogin, postSignUp} from '../../../api/auth';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Typography from '../../../components/Typography';
 import UnderlinedInput from '../../../components/UnderlinedInput';
 import {colors} from '../../../constants/colors';
 import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {LoginReqDto} from '../../../types/dto/LoginReqDto';
+import {useUserStore} from '../../../utils/userStore';
 
 type LoginScreenProps = {
   navigation: StackNavigationProp<LoginStackParamList, 'Login'>;
 };
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
-  const [loginData, setLoginData] = useState({id: '', password: ''});
+  const {login} = useUserStore();
+  const [loginData, setLoginData] = useState<LoginReqDto>({
+    loginId: '',
+    password: '',
+  });
   return (
     <View
       style={{
@@ -31,8 +38,8 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
       </View>
       <View style={{marginTop: 30}}>
         <UnderlinedInput
-          value={loginData.id}
-          onChangeFn={text => setLoginData({...loginData, id: text})}
+          value={loginData.loginId}
+          onChangeFn={text => setLoginData({...loginData, loginId: text})}
           placeholder="아이디"
           type="id"
         />
@@ -48,14 +55,24 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           <ConfirmButton
             title="로그인"
             handlerFn={() => {
-              navigation.navigate('Interest');
+              login('usera');
+              postLogin(loginData);
             }}
             active
           />
           <ConfirmButton
             title="이메일 회원가입"
             handlerFn={() => {
-              navigation.navigate('Terms');
+              postSignUp({
+                loginId: 'choco',
+                email: 'haha@g.hongik.ac.kr',
+                password: 'qweasd1!',
+                name: '김준수',
+                birthday: '2001-05-08',
+                major: '컴퓨터공학과',
+                gender: 'MALE',
+                userType: 'native',
+              });
             }}
             active
             style={{backgroundColor: '#989A9F'}}
