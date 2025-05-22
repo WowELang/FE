@@ -1,21 +1,21 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {postLogin, postSignUp} from '../../../api/auth';
+import {postSignUp} from '../../../api/auth';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Typography from '../../../components/Typography';
 import UnderlinedInput from '../../../components/UnderlinedInput';
 import {colors} from '../../../constants/colors';
+import {useAuth} from '../../../hooks/useAuth';
 import {LoginStackParamList} from '../../../navigators/LoginNavigator';
 import {LoginReqDto} from '../../../types/dto/LoginReqDto';
-import {useUserStore} from '../../../utils/userStore';
 
 type LoginScreenProps = {
   navigation: StackNavigationProp<LoginStackParamList, 'Login'>;
 };
 
 const LoginScreen = ({navigation}: LoginScreenProps) => {
-  const {login} = useUserStore();
+  const {loginMutation} = useAuth();
   const [loginData, setLoginData] = useState<LoginReqDto>({
     loginId: '',
     password: '',
@@ -55,8 +55,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           <ConfirmButton
             title="로그인"
             handlerFn={() => {
-              login('usera');
-              postLogin(loginData);
+              loginMutation.mutate(loginData);
             }}
             active
           />
@@ -71,7 +70,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
                 birthday: '2001-05-08',
                 major: '컴퓨터공학과',
                 gender: 'MALE',
-                userType: 'native',
+                userType: 'NATIVE',
               });
             }}
             active

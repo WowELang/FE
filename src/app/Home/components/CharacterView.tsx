@@ -2,9 +2,12 @@ import {useNavigation} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useEffect, useRef} from 'react';
 import {Animated, Dimensions, Pressable, StyleSheet, View} from 'react-native';
-import {Character, Cloud, Dress, NormalShakingBin, Sun} from '../../../assets';
+import {Character, Cloud, Dress, Sun} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
+import StandingCharacter from '../../../components/StandingCharacter';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
+import {useAuth} from '../../../hooks/useAuth';
 import {HomeStackParamList} from '../../../navigators/HomeNavigator';
 
 const {width} = Dimensions.get('window');
@@ -54,16 +57,24 @@ const AnimatedCloud = ({x, y, delay}: AnimatedCloudProps) => {
 
 const CharacterView = () => {
   const navigation = useNavigation<StackNavigationProp<HomeStackParamList>>();
-  return (
+  const {userProfileQuery} = useAuth();
+  const {data} = userProfileQuery;
+
+  useEffect(() => {});
+  return !data ? (
+    <Typography size={50} bold>
+      에러 발생!
+    </Typography>
+  ) : (
     <View style={styles.container}>
-      <NormalShakingBin
-        fill={'red'}
-        style={{position: 'absolute', zIndex: 2, top: 90, left: 43}}
+      <StandingCharacter
+        color={CHARACTERCOLOR[data.character.colorId]}
+        face={CHARACTERFACE[data.character.maskId]}
       />
       <View style={styles.sky}>
         <View style={styles.header}>
           <Typography size={16} bold color="#989A9F">
-            후비적거리는 홍냥이
+            {data.nickname}
           </Typography>
           <View style={{flexDirection: 'row', gap: 8}}>
             <Dress fill={'#989A9F'} />
@@ -85,9 +96,12 @@ const CharacterView = () => {
       <View style={styles.ground}>
         <View style={{flexDirection: 'row', gap: 15}}>
           <Typography size={28} bold>
-            혼기쿠
+            {data.name}
           </Typography>
-          <Typography size={20}>교환학생 | 일본</Typography>
+          <Typography size={20}>
+            {data.usertype === 'NATIVE' ? '재학생' : '교환학생'} |{' '}
+            {data.usertype === 'NATIVE' ? data.major : data.country}
+          </Typography>
         </View>
         <ConfirmButton
           title="교정 보관함 들어가기"

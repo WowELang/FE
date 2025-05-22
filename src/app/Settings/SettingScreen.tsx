@@ -1,10 +1,13 @@
 import React from 'react';
-import {Text, View} from 'react-native';
+import {Button, View} from 'react-native';
+import {useMMKVStorage} from 'react-native-mmkv-storage';
+import {storage} from '../../../App';
 
 const SettingScreen = () => {
+  const [token, setToken] = useMMKVStorage('token', storage, '');
   return (
     <View>
-      <Text>SettingScreen</Text>
+      <Button title="로그아웃" onPress={() => setToken('')} />
     </View>
   );
 };
