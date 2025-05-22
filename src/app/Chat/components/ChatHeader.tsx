@@ -17,9 +17,9 @@ const ChatHeader = () => {
         <Back fill={colors.gray.primary} />
       </Pressable>
       <View style={styles.profile}>
-        <Profile type="normal" color="pink" size={48} />
+        <Profile type="normal" color="red" size={48} />
         <Typography size={16} bold>
-          의문스러운 와우
+          userb
         </Typography>
       </View>
     </View>

@@ -3,16 +3,19 @@ import {FlatList, Keyboard} from 'react-native';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 
 import {useMessageStore} from '../../../utils/messageStore';
-import {useUserStore} from '../../../utils/userStore';
 import Message from './Message';
 
 interface ChatContentsProps {
   onContentPress: () => void;
   messages: ChatMessageDto[];
+  reachFn: () => void;
 }
 
-const ChatContents = ({onContentPress, messages}: ChatContentsProps) => {
-  const {userId} = useUserStore();
+const ChatContents = ({
+  onContentPress,
+  messages,
+  reachFn,
+}: ChatContentsProps) => {
   const removeCorrectMessage = useMessageStore(state => state.removeMessage);
   const [isScrolling, setIsScrolling] = useState(false);
 
@@ -41,6 +44,7 @@ const ChatContents = ({onContentPress, messages}: ChatContentsProps) => {
       onScrollEndDrag={handleScrollEnd}
       onTouchEnd={handleTouchEnd}
       data={messages}
+      onEndReached={reachFn}
       renderItem={({item, index}) => {
         const isHead =
           !messages[index + 1] ||
@@ -49,7 +53,7 @@ const ChatContents = ({onContentPress, messages}: ChatContentsProps) => {
         return (
           <Message
             key={item.id}
-            isMine={item.senderId === userId}
+            isMine={item.senderId === 'usera'}
             head={isHead}
             message={item}
             onLongPress={() => setSkipTouch(true)}
