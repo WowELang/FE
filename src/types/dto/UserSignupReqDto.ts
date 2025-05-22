@@ -1,6 +1,6 @@
 type GenderType = 'MALE' | 'FEMALE';
 
-type UserType = 'native' | 'foreign';
+export type UserType = 'NATIVE' | 'FOREIGN';
 export type DateType = {year: string; month: string; day: string};
 export interface UserSignupReqDto {
   loginId: string;

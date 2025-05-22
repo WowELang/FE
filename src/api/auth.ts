@@ -1,7 +1,8 @@
 import axios from 'axios';
-import { LoginReqDto } from '../types/dto/LoginReqDto';
-import { UserSignupReqDto } from '../types/dto/UserSignupReqDto';
-import { axiosInstance } from './axios';
+import {LoginReqDto} from '../types/dto/LoginReqDto';
+import {UserProfileDto} from '../types/dto/UserProfileDto';
+import {UserSignupReqDto} from '../types/dto/UserSignupReqDto';
+import {axiosInstance} from './axios';
 
 export const postSignUp = async (signUpData: UserSignupReqDto) => {
   try {
@@ -40,6 +41,7 @@ export const postSignUp = async (signUpData: UserSignupReqDto) => {
 export const postLogin = async (loginData: LoginReqDto) => {
   try {
     const response = await axiosInstance.post('/auth/login', loginData);
+    console.log(response.data);
     return response.data;
   } catch (error) {
     if (axios.isAxiosError(error)) {
@@ -71,9 +73,8 @@ export const postLogin = async (loginData: LoginReqDto) => {
   }
 };
 
-
-export const getUserData= async ()=>{
-  try{
-    const response = await axiosInstance.get('/user/me/profile')
-  }
-}
+export const getUserProfile = async (): Promise<UserProfileDto> => {
+  const response = await axiosInstance.get('/user/me/profile');
+  console.log(response);
+  return response.data;
+};

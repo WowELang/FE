@@ -36,7 +36,7 @@ const ChatRoom = ({
         <View style={styles.roomInfo}>
           <View style={styles.userInfo}>
             <Typography size={12} bold>
-              후비적거리는 홍냥이
+              userb
             </Typography>
             <Typography size={10} color={colors.gray.primary}>
               시각디자인과

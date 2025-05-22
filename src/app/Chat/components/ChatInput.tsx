@@ -10,11 +10,12 @@ import {
 import {Next, Picture} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
+import {useAuth} from '../../../hooks/useAuth';
 import {useStompClient} from '../../../scoket';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 import {useMessageStore} from '../../../utils/messageStore';
-import {useUserStore} from '../../../utils/userStore';
 
 interface ChatInputProps {
   isMenuOpen: boolean;
@@ -36,7 +37,7 @@ const ChatInput = ({
   const [pictureModalOpen, setPictureModalOpen] = useState(false);
 
   const stompClient = useStompClient();
-  const {userId} = useUserStore();
+  const {userProfileQuery} = useAuth();
 
   function sendMessage(messagePayload) {
     // messagePayload는 아래 형식 중 하나
@@ -111,7 +112,11 @@ const ChatInput = ({
       </Modal>
       <View style={styles.contentWrapper}>
         <Pressable onPress={toggleMenu}>
-          <Profile type="normal" color="red" size={24} />
+          <Profile
+            type={CHARACTERFACE[userProfileQuery.data?.character.maskId]}
+            color={CHARACTERCOLOR[userProfileQuery.data?.character.colorId]}
+            size={24}
+          />
         </Pressable>
         <View style={styles.divider} />
         <TextInput
