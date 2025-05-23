@@ -146,6 +146,8 @@ const ChatInput = ({
         />
         <Pressable
           onPress={() => {
+            if (!input.trim()) return;
+            
             const messagePayload = {
               type: correctMessage ? 'CORRECTION' : 'TEXT',
               content: input,
@@ -154,10 +156,10 @@ const ChatInput = ({
             
             sendMessage(messagePayload);
             
-            // UI 즉시 업데이트를 위해 임시 메시지 추가
-            if (input.trim() && userId) {
+            // 즉시 반응성을 위한 임시 메시지 추가
+            if (userId) {
               const tempMessage: ChatMessageDto = {
-                id: `temp-${Date.now()}`,
+                id: `temp-${Date.now()}-${Math.random()}`, // 고유한 임시 ID
                 roomId: roomId,
                 senderId: String(userId),
                 type: (correctMessage ? 'CORRECTION' : 'TEXT') as 'CORRECTION' | 'TEXT',

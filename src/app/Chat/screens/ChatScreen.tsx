@@ -38,9 +38,33 @@ const ChatScreen = ({route}: ChatScreenProps) => {
     (message: ChatMessageDto | ChatMessageDto[]) => {
       setMessages(prevMessages => {
         if (Array.isArray(message)) {
+          // 배열로 전달된 경우 (초기 메시지 로드)
           return [...message, ...prevMessages];
         } else {
-          return [message, ...prevMessages];
+          // 단일 메시지인 경우
+          let updatedMessages = [...prevMessages];
+          
+          // 서버에서 온 실제 메시지인 경우 (temp-로 시작하지 않는 ID)
+          if (!message.id.startsWith('temp-')) {
+            // 같은 내용의 임시 메시지가 있다면 제거
+            updatedMessages = updatedMessages.filter(existingMessage => 
+              !(existingMessage.id.startsWith('temp-') && 
+                existingMessage.content === message.content && 
+                existingMessage.senderId === message.senderId)
+            );
+          }
+          
+          // 중복 체크 (동일한 ID 또는 매우 유사한 메시지)
+          const isDuplicate = updatedMessages.some(existingMessage => 
+            existingMessage.id === message.id
+          );
+          
+          if (isDuplicate) {
+            console.log('Duplicate message detected, skipping:', message);
+            return prevMessages;
+          }
+          
+          return [message, ...updatedMessages];
         }
       });
     },
