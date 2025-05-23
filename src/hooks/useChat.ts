@@ -16,9 +16,9 @@ export const useChatMessages = (
 
 export const useChatRoom = (userId: string) => {
   const roomQuery = useQuery({
-    queryKey: ['chat', 'room'],
+    queryKey: ['chat', 'room', userId],
     queryFn: () => getRoomList(userId),
-    enabled: !!userId,
+    enabled: !!userId && userId.trim() !== '',
   });
   return roomQuery;
 };

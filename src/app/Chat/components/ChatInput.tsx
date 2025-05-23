@@ -38,18 +38,32 @@ const ChatInput = ({
 
   const stompClient = useStompClient();
   const {userProfileQuery} = useAuth();
+  const userId = userProfileQuery.data?.userId;
 
-  function sendMessage(messagePayload) {
+  function sendMessage(messagePayload: any) {
+    console.log('sendMessage called with:', messagePayload);
+    console.log('stompClient:', stompClient);
+    console.log('stompClient.active:', stompClient?.active);
+    console.log('roomId:', roomId);
+    console.log('userId:', userId);
+    
     // messagePayload는 아래 형식 중 하나
-    if (stompClient && stompClient.active && roomId) {
+    if (stompClient && stompClient.active && roomId && userId) {
+      console.log('Sending message to server...');
       stompClient.publish({
         destination: `/app/chat.send.${roomId}`, // 메시지를 보낼 목적지 주소
-        headers: {'X-User-Id': userId}, // 필요시 추가 헤더
+        headers: {'X-User-Id': String(userId)}, // 필요시 추가 헤더
         body: JSON.stringify(messagePayload),
       });
       console.log('Sent message:', messagePayload);
     } else {
       console.error('STOMP client not active or no room selected.');
+      console.error('Conditions:', {
+        'stompClient exists': !!stompClient,
+        'stompClient.active': stompClient?.active,
+        'roomId exists': !!roomId,
+        'userId exists': !!userId
+      });
     }
   }
 
@@ -113,8 +127,8 @@ const ChatInput = ({
       <View style={styles.contentWrapper}>
         <Pressable onPress={toggleMenu}>
           <Profile
-            type={CHARACTERFACE[userProfileQuery.data?.character.maskId]}
-            color={CHARACTERCOLOR[userProfileQuery.data?.character.colorId]}
+            type={CHARACTERFACE[userProfileQuery.data?.character?.maskId || 0]}
+            color={CHARACTERCOLOR[userProfileQuery.data?.character?.colorId || 0]}
             size={24}
           />
         </Pressable>
@@ -132,11 +146,31 @@ const ChatInput = ({
         />
         <Pressable
           onPress={() => {
-            sendMessage({
+            const messagePayload = {
               type: correctMessage ? 'CORRECTION' : 'TEXT',
               content: input,
               originalMessage: correctMessage?.content,
-            });
+            };
+            
+            sendMessage(messagePayload);
+            
+            // UI 즉시 업데이트를 위해 임시 메시지 추가
+            if (input.trim() && userId) {
+              const tempMessage: ChatMessageDto = {
+                id: `temp-${Date.now()}`,
+                roomId: roomId,
+                senderId: String(userId),
+                type: (correctMessage ? 'CORRECTION' : 'TEXT') as 'CORRECTION' | 'TEXT',
+                content: input,
+                s3Key: null,
+                originalMessage: correctMessage?.content || null,
+                correctedText: null,
+                createdAt: new Date().toISOString(),
+                deleted: false,
+              };
+              addMessage(tempMessage);
+            }
+            
             setInput('');
             removeMessage();
           }}>

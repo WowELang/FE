@@ -53,7 +53,7 @@ const ChatScreen = ({route}: ChatScreenProps) => {
   useEffect(() => {
     const loadInitialMessages = async () => {
       try {
-        const initialMessages = await getMessages(roomId, 'usera');
+        const initialMessages = await getMessages(roomId, String(data?.userId || ''));
         if (initialMessages && initialMessages.length > 0) {
           setMessages(initialMessages);
         }
@@ -63,7 +63,9 @@ const ChatScreen = ({route}: ChatScreenProps) => {
       }
     };
 
-    loadInitialMessages();
+    if (data?.userId) {
+      loadInitialMessages();
+    }
   }, [roomId, data?.userId]);
 
   // STOMP 연결 및 구독
