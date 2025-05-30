@@ -4,6 +4,7 @@ import React from 'react';
 import {View} from 'react-native';
 import Divider from '../../../components/Divider';
 import {colors} from '../../../constants/colors';
+import {useAuth} from '../../../hooks/useAuth';
 import {useChatRoom} from '../../../hooks/useChat';
 import {ChatstackParamList} from '../../../navigators/ChatNavigator';
 import ChatRoom from '../components/ChatRoom';
@@ -11,8 +12,10 @@ import ChatRoom from '../components/ChatRoom';
 const ChatRoomListScreen = () => {
   const navigation =
     useNavigation<StackNavigationProp<ChatstackParamList, 'ChatRoomList'>>();
-  const roomQuery = useChatRoom('usera');
+  const {userProfileQuery} = useAuth();
+  const roomQuery = useChatRoom(userProfileQuery.data?.userId);
   const {data, refetch} = roomQuery;
+
   useFocusEffect(() => {
     refetch();
   });

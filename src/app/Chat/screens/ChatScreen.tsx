@@ -4,7 +4,7 @@ import {Keyboard, View} from 'react-native';
 import {getMessages} from '../../../api/chat';
 import {useAuth} from '../../../hooks/useAuth';
 import {ChatstackParamList} from '../../../navigators/ChatNavigator';
-import {useStompClient} from '../../../scoket';
+import {useStompClient} from '../../../socket';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 import ChatContents from '../components/ChatContents';
 import ChatHeader from '../components/ChatHeader';
@@ -53,7 +53,10 @@ const ChatScreen = ({route}: ChatScreenProps) => {
   useEffect(() => {
     const loadInitialMessages = async () => {
       try {
-        const initialMessages = await getMessages(roomId, 'usera');
+        const initialMessages = await getMessages(
+          roomId,
+          data?.userId.toString(),
+        );
         if (initialMessages && initialMessages.length > 0) {
           setMessages(initialMessages);
         }

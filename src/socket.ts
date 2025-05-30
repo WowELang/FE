@@ -11,7 +11,7 @@ export const useStompClient = () => {
     const stompClient = new Client({
       brokerURL: 'ws://3.39.215.81:8080/chat-websocket',
       connectHeaders: {
-        'X-User-Id': 'usera',
+        'X-User-Id': userProfileQuery.data?.userId,
       },
       // 이제 heartbeat 옵션은 무시해도 됩니다.
       reconnectDelay: 5000,

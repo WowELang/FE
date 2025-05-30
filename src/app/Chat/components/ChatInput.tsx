@@ -13,7 +13,7 @@ import Typography from '../../../components/Typography';
 import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
 import {useAuth} from '../../../hooks/useAuth';
-import {useStompClient} from '../../../scoket';
+import {useStompClient} from '../../../socket';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 import {useMessageStore} from '../../../utils/messageStore';
 
@@ -39,19 +39,20 @@ const ChatInput = ({
   const stompClient = useStompClient();
   const {userProfileQuery} = useAuth();
 
-  function sendMessage(messagePayload) {
+  const sendMessage = messagePayload => {
     // messagePayload는 아래 형식 중 하나
+
     if (stompClient && stompClient.active && roomId) {
       stompClient.publish({
         destination: `/app/chat.send.${roomId}`, // 메시지를 보낼 목적지 주소
-        headers: {'X-User-Id': userId}, // 필요시 추가 헤더
+        headers: {'X-User-Id': userProfileQuery.data?.userId.toString()}, // 필요시 추가 헤더
         body: JSON.stringify(messagePayload),
       });
       console.log('Sent message:', messagePayload);
     } else {
       console.error('STOMP client not active or no room selected.');
     }
-  }
+  };
 
   useEffect(() => {
     setInput(correctMessage ? correctMessage.content : '');

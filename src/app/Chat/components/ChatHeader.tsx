@@ -19,7 +19,7 @@ const ChatHeader = () => {
       <View style={styles.profile}>
         <Profile type="normal" color="red" size={48} />
         <Typography size={16} bold>
-          userb
+          user
         </Typography>
       </View>
     </View>
