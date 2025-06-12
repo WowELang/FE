@@ -13,8 +13,8 @@ import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
 import {useSendImage} from '../../../hooks/useChat';
+import {useUser} from '../../../hooks/useUser';
 import {useStompClient} from '../../../socket';
 import {ChatMessageDto, SendMessage} from '../../../types/dto/ChatMessageDto';
 import {useMessageStore} from '../../../utils/messageStore';
@@ -38,10 +38,9 @@ const ChatInput = ({
   const [ImageModalOpen, setImageModalOpen] = useState(false);
 
   const stompClient = useStompClient();
-  const {userProfileQuery} = useAuth();
-  const {data: userData} = userProfileQuery;
-  const imageMutation = useSendImage();
-  const {data: imageUrl, mutate: imageMutate} = imageMutation;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
+  const {data: imageUrl, mutate: imageMutate, isPending} = useSendImage();
 
   const sendMessage = (messagePayload: SendMessage) => {
     if (stompClient && stompClient.active && roomId && userData) {
@@ -56,20 +55,24 @@ const ChatInput = ({
   const openGallery = () => {
     launchImageLibrary({mediaType: 'mixed', selectionLimit: 1}, response => {
       if (response.assets) imageMutate(response.assets[0]);
+      setImageModalOpen(false);
     });
   };
   const openCamera = () => {
     launchCamera({mediaType: 'mixed'}, response => {
       if (response.assets) imageMutate(response.assets[0]);
+      setImageModalOpen(false);
     });
   };
 
   useEffect(() => {
-    setInput(correctMessage ? correctMessage.content : '');
+    if (correctMessage) setInput(correctMessage ? correctMessage.content : '');
   }, [correctMessage]);
 
   useEffect(() => {
-    sendMessage({type: 'IMAGE', s3Key: imageUrl});
+    if (imageUrl) {
+      sendMessage({type: 'IMAGE', s3Key: imageUrl});
+    }
   }, [imageUrl]);
 
   return (
