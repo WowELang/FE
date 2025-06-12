@@ -14,6 +14,7 @@ import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
 import LanguageScreen from './src/app/Login/screens/LanguageScreen';
 import LoginNavigator from './src/navigators/LoginNavigator';
 import RootNavigator from './src/navigators/RootNavigator';
+import {Tokens} from './src/types/dto/LoginReqDto';
 
 const TextEncodingPolyfill = require('text-encoding');
 
@@ -26,8 +27,8 @@ export const storage = new MMKVLoader().withEncryption().initialize();
 export const queryClient = new QueryClient();
 function App(): React.JSX.Element {
   const languageChosen = true;
-  const [token, setToken] = useMMKVStorage('token', storage);
-  const isLoggedin = !!token;
+  const [tokens, setTokens] = useMMKVStorage<Tokens>('tokens', storage);
+  const isLoggedin = !!tokens?.refreshToken;
 
   return (
     <SafeAreaProvider>

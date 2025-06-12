@@ -1,30 +1,47 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
-import {useEffect} from 'react';
+import {useMutation} from '@tanstack/react-query';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
 import {storage} from '../../App';
 import {
-  getInterests,
-  getUserProfile,
-  postCharacter,
   postCheckId,
   postEmailVerification,
   postEmailVerificationCode,
-  postInterests,
   postLogin,
-  postNickname,
+  postRefresh,
 } from '../api/auth';
-import {axiosApiInstance, axiosChatInstance} from '../api/axios';
+import {axiosApiInstance} from '../api/axios';
+import {Tokens} from '../types/dto/LoginReqDto';
 
 export const useAuth = () => {
-  const [token, setToken] = useMMKVStorage('token', storage, '');
+  const [tokens, setTokens] = useMMKVStorage<Tokens>('tokens', storage, {
+    accessToken: '',
+    refreshToken: '',
+  });
+
   const loginMutation = useMutation({
     mutationFn: postLogin,
     onSuccess: ({result}) => {
-      setToken(result.accessToken);
+      setTokens({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
       axiosApiInstance.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`;
     },
     onError: error => {
       console.log(error);
+    },
+  });
+
+  const refreshMutation = useMutation({
+    mutationFn: postRefresh,
+    onSuccess: ({result}) => {
+      setTokens({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
+      axiosApiInstance.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`;
+    },
+    onError: () => {
+      setTokens({accessToken: '', refreshToken: ''});
     },
   });
 
@@ -49,58 +66,10 @@ export const useAuth = () => {
     },
   });
 
-  const interestMutation = useMutation({
-    mutationFn: postInterests,
-    onError: error => {
-      console.log(error);
-    },
-  });
-
-  const characterMutation = useMutation({
-    mutationFn: postCharacter,
-    onError: error => {
-      console.log(error);
-    },
-  });
-
-  const userProfileQuery = useQuery({
-    queryKey: ['user', 'auth', 'profile'],
-    queryFn: getUserProfile,
-    enabled: !!axiosApiInstance.defaults.headers.common.Authorization,
-  });
-
-  const interestQuery = useQuery({
-    queryKey: ['user', 'interest'],
-    queryFn: getInterests,
-    enabled: !!axiosApiInstance.defaults.headers.common.Authorization,
-  });
-  const nicknameMutation = useMutation({
-    mutationFn: postNickname,
-    onError: error => {
-      console.log(error);
-    },
-  });
-
-  useEffect(() => {
-    if (!userProfileQuery.isLoading) {
-      if (userProfileQuery.isSuccess && token) {
-        axiosChatInstance.defaults.headers.common['X-User-Id'] =
-          userProfileQuery.data.userId.toString();
-      } else {
-        setToken('');
-      }
-    }
-  }, [userProfileQuery, token, setToken]);
-
   return {
     loginMutation,
     checkIdMutation,
     emailMutation,
     emailCodeMutation,
-    userProfileQuery,
-    interestQuery,
-    interestMutation,
-    characterMutation,
-    nicknameMutation,
   };
 };
