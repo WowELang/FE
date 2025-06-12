@@ -1,13 +1,21 @@
 import {
   CharacterType,
   InterestType,
+  OtherUserProfileResponse,
   UserProfileDto,
 } from '../types/dto/UserProfileDto';
 import {axiosApiInstance} from './axios';
 
-export const getUserProfile = async (): Promise<UserProfileDto> => {
+export const getMyProfile = async (): Promise<UserProfileDto> => {
   const response = await axiosApiInstance.get('/user/me/profile');
-  console.log('get user data');
+
+  return response.data;
+};
+
+export const getUserProfile = async (
+  userId: number,
+): Promise<OtherUserProfileResponse> => {
+  const response = await axiosApiInstance.get(`/user/me/${userId}/profile`);
   return response.data;
 };
 

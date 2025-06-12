@@ -4,6 +4,7 @@ import {queryClient} from '../../App';
 import {axiosApiInstance, axiosChatInstance} from '../api/axios';
 import {
   getInterests,
+  getMyProfile,
   getUserProfile,
   postCharacter,
   postInterests,
@@ -19,9 +20,9 @@ export const useUser = () => {
     },
   });
 
-  const userProfileQuery = useQuery({
-    queryKey: ['user', 'profile'],
-    queryFn: getUserProfile,
+  const myProfileQuery = useQuery({
+    queryKey: ['user', 'profile', 'mine'],
+    queryFn: getMyProfile,
     enabled: !!axiosApiInstance.defaults.headers.common.Authorization,
   });
 
@@ -53,18 +54,27 @@ export const useUser = () => {
   });
 
   useEffect(() => {
-    if (userProfileQuery.isSuccess && userProfileQuery.data?.userId) {
+    if (myProfileQuery.isSuccess && myProfileQuery.data?.userId) {
       axiosChatInstance.defaults.headers.common['X-User-Id'] =
-        userProfileQuery.data.userId.toString();
+        myProfileQuery.data.userId.toString();
     }
-  }, [userProfileQuery.isSuccess, userProfileQuery.data?.userId]);
+  }, [myProfileQuery.isSuccess, myProfileQuery.data?.userId]);
 
   return {
-    userProfileQuery,
+    myProfileQuery,
     interestQuery,
     interestMutation,
     changeCharacterMutation,
     characterMutation,
     nicknameMutation,
   };
+};
+
+export const useProfile = (userId: number) => {
+  const userProfileQuery = useQuery({
+    queryKey: ['user', 'profile', 'other'],
+    queryFn: () => getUserProfile(userId),
+    enabled: !!axiosApiInstance.defaults.headers.common.Authorization,
+  });
+  return userProfileQuery;
 };

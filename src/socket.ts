@@ -4,8 +4,8 @@ import {useUser} from './hooks/useUser';
 
 export const useStompClient = () => {
   const stompClientRef = useRef<Client | null>(null);
-  const {userProfileQuery} = useUser();
-  const {data: userData} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
   useEffect(() => {
     if (!userData) {

@@ -23,8 +23,8 @@ export type RootStackParamList = {
 const RootBottomTab = createBottomTabNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const {userProfileQuery} = useUser();
-  const {data: userData} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
   return userData?.nickname === null ? (
     <InitialSelectNavigator />

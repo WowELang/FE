@@ -20,3 +20,9 @@ export interface UserProfileDto {
   usertype: UserType;
   country: string;
 }
+export interface OtherUserProfileResponse {
+  nickname: string | null;
+  character: CharacterType;
+  interests: InterestType[];
+  countryOrMajor: string;
+}

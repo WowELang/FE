@@ -8,7 +8,7 @@ import StandingCharacter from '../../../components/StandingCharacter';
 import Typography from '../../../components/Typography';
 import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {HomeStackParamList} from '../../../navigators/HomeNavigator';
 
 const {width} = Dimensions.get('window');
@@ -59,8 +59,8 @@ const AnimatedCloud = ({x, y, delay}: AnimatedCloudProps) => {
 
 const CharacterView = () => {
   const navigation = useNavigation<StackNavigationProp<HomeStackParamList>>();
-  const {userProfileQuery} = useAuth();
-  const {data: userData} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
   return !userData ? (
     <Typography size={50} bold>
