@@ -11,8 +11,8 @@ import {Tokens} from '../../types/dto/LoginReqDto';
 
 const SettingScreen = () => {
   const [tokens, setTokens] = useMMKVStorage<Tokens>('tokens', storage);
-  const {userProfileQuery} = useUser();
-  const {data: userData} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
   return (
     <View
