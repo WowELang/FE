@@ -1,7 +1,6 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {View} from 'react-native';
-import {postSignUp} from '../../../api/auth';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Typography from '../../../components/Typography';
 import UnderlinedInput from '../../../components/UnderlinedInput';
@@ -20,6 +19,8 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
     loginId: '',
     password: '',
   });
+  const {data, error} = loginMutation;
+
   return (
     <View
       style={{
@@ -62,16 +63,7 @@ const LoginScreen = ({navigation}: LoginScreenProps) => {
           <ConfirmButton
             title="이메일 회원가입"
             handlerFn={() => {
-              postSignUp({
-                loginId: 'choco',
-                email: 'haha@g.hongik.ac.kr',
-                password: 'qweasd1!',
-                name: '김준수',
-                birthday: '2001-05-08',
-                major: '컴퓨터공학과',
-                gender: 'MALE',
-                userType: 'NATIVE',
-              });
+              navigation.navigate('Terms');
             }}
             active
             style={{backgroundColor: '#989A9F'}}

@@ -30,7 +30,7 @@ const SWIPE_THRESHOLD = 50;
 
 const RegisterScreen = ({navigation}: RegisterScreenProps) => {
   const defaultValues = {
-    userType: undefined,
+    usertype: undefined,
     country: '',
     name: '',
     gender: undefined,
@@ -39,8 +39,16 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
     loginId: '',
     password: '',
     email: '',
+    code: 0,
   };
-  const {control, watch, resetField} = useForm<UserSignupReqDto>({
+  const {
+    control,
+    watch,
+    resetField,
+    setValue,
+    handleSubmit,
+    formState: {errors, isSubmitSuccessful},
+  } = useForm<UserSignupReqDto>({
     defaultValues,
   });
   const fieldList = Object.keys(defaultValues) as (keyof UserSignupReqDto)[];
@@ -79,6 +87,14 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
     }),
   ).current;
 
+  useEffect(() => {
+    if (errors) console.log(errors);
+    if (isSubmitSuccessful) navigation.navigate('Splash');
+  }, [errors, isSubmitSuccessful]);
+
+  useEffect(() => {
+    console.log(userData);
+  }, [userData]);
   useLayoutEffect(() => {
     navigation.setOptions({gestureEnabled: false});
   }, [navigation]);
@@ -110,7 +126,10 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
             <Back fill={colors.gray.primary} />
           </Pressable>
           {step === 8 ? (
-            <SchoolAuthentication control={control} />
+            <SchoolAuthentication
+              control={control}
+              handleSubmit={handleSubmit}
+            />
           ) : (
             <View style={{flex: 1}}>
               <View
@@ -129,6 +148,7 @@ const RegisterScreen = ({navigation}: RegisterScreenProps) => {
                     control={control}
                     idValue={userData.loginId}
                     pwValue={userData.password}
+                    setValue={setValue}
                   />
                 ) : (
                   <IntroduceForm
