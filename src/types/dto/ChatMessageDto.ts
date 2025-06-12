@@ -1,4 +1,4 @@
-type MessageType = 'TEXT' | 'IMAGE' | 'CORRECTION';
+export type MessageType = 'TEXT' | 'IMAGE' | 'CORRECTION';
 
 export interface ChatMessageDto {
   id: string;
@@ -12,3 +12,19 @@ export interface ChatMessageDto {
   createdAt: string;
   deleted: boolean;
 }
+
+export type SendMessage = TextMessage | CorrectionMessage | ImageMessage;
+
+type TextMessage = {
+  type: 'TEXT';
+  content: ChatMessageDto['content'];
+};
+type CorrectionMessage = {
+  type: 'CORRECTION';
+  content: ChatMessageDto['content'];
+  originalMessage: ChatMessageDto['originalMessage'];
+};
+type ImageMessage = {
+  type: 'IMAGE';
+  s3Key: ChatMessageDto['s3Key'];
+};
