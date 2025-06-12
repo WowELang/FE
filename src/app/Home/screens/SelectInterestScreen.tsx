@@ -6,7 +6,7 @@ import ConfirmButton from '../../../components/ConfirmButton';
 import Tag from '../../../components/Tag';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface InterestScreenProps {
@@ -19,7 +19,7 @@ interface InterestScreenProps {
 const InterestScreen = ({navigation}: InterestScreenProps) => {
   const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
 
-  const {interestQuery, interestMutation} = useAuth();
+  const {interestQuery, interestMutation} = useUser();
   const {data: interestData} = interestQuery;
   const {mutate: interestMutate} = interestMutation;
 

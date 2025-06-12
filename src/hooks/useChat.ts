@@ -1,10 +1,10 @@
 import {useMutation, useQuery} from '@tanstack/react-query';
 import {getImage, getMessages, getRoomList, postImage} from '../api/chat';
 import {MessageType} from '../types/dto/ChatMessageDto';
-import {useAuth} from './useAuth';
+import {useUser} from './useUser';
 
 export const useChatMessages = (roomId: string, before?: string) => {
-  const {userProfileQuery} = useAuth();
+  const {userProfileQuery} = useUser();
   const {data: userData} = userProfileQuery;
   const messageQuery = useQuery({
     queryKey: ['chat', 'messages'],
@@ -15,7 +15,7 @@ export const useChatMessages = (roomId: string, before?: string) => {
 };
 
 export const useChatRoom = () => {
-  const {userProfileQuery} = useAuth();
+  const {userProfileQuery} = useUser();
   const {data: userData} = userProfileQuery;
   const roomQuery = useQuery({
     queryKey: ['chat', 'room'],

@@ -2,7 +2,7 @@ import React, {useState} from 'react';
 import {FlatList, Keyboard} from 'react-native';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {useMessageStore} from '../../../utils/messageStore';
 import Message from './Message';
 
@@ -22,8 +22,8 @@ const ChatContents = ({
 
   const [skipTouch, setSkipTouch] = useState(false);
 
-  const {userProfileQuery} = useAuth();
-  const {data} = userProfileQuery;
+  const {userProfileQuery} = useUser();
+  const {data: userData} = userProfileQuery;
 
   const handleScrollBegin = () => {
     setIsScrolling(true);
@@ -57,7 +57,7 @@ const ChatContents = ({
         return (
           <Message
             key={item.id}
-            isMine={item.senderId === data?.userId.toString()}
+            isMine={item.senderId === userData?.userId.toString()}
             head={isHead}
             message={item}
             onLongPress={() => setSkipTouch(true)}

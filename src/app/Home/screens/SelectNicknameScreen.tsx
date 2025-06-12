@@ -6,7 +6,7 @@ import ConfirmButton from '../../../components/ConfirmButton';
 import Typography from '../../../components/Typography';
 import UnderlinedInput from '../../../components/UnderlinedInput';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface SelectNicknameScreenProps {
@@ -18,7 +18,7 @@ interface SelectNicknameScreenProps {
 const SelectNicknameScreen = ({navigation}: SelectNicknameScreenProps) => {
   const [nickname, setNickname] = useState('');
 
-  const {nicknameMutation} = useAuth();
+  const {nicknameMutation} = useUser();
   const {mutate: nicknameMutate} = nicknameMutation;
   return (
     <View

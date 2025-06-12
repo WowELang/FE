@@ -1,19 +1,22 @@
 import {Client} from '@stomp/stompjs';
 import {useEffect, useRef} from 'react';
-import {useAuth} from './hooks/useAuth';
+import {useUser} from './hooks/useUser';
 
 export const useStompClient = () => {
   const stompClientRef = useRef<Client | null>(null);
-  const {userProfileQuery} = useAuth();
-  const {data} = userProfileQuery;
+  const {userProfileQuery} = useUser();
+  const {data: userData} = userProfileQuery;
 
   useEffect(() => {
+    if (!userData) {
+      console.log('There is no user!');
+      return;
+    }
     const stompClient = new Client({
       brokerURL: 'ws://3.39.215.81:8080/chat-websocket',
       connectHeaders: {
-        'X-User-Id': userProfileQuery.data?.userId,
+        'X-User-Id': userData?.userId.toString(),
       },
-      // 이제 heartbeat 옵션은 무시해도 됩니다.
       reconnectDelay: 5000,
       connectionTimeout: 10000,
       debug: msg => console.log('STOMP:', msg),
@@ -34,7 +37,7 @@ export const useStompClient = () => {
         stompClient.deactivate();
       }
     };
-  }, [data.userId]);
+  }, [userData]);
 
   return stompClientRef.current;
 };

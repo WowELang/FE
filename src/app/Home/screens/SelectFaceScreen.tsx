@@ -8,7 +8,7 @@ import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface SelectFaceScreenProps {
@@ -18,7 +18,7 @@ interface SelectFaceScreenProps {
 const SelectFaceScreen = ({navigation, route}: SelectFaceScreenProps) => {
   const selectedColor = route.params.color;
   const [selectedFace, setSelectedFace] = useState(-1);
-  const {characterMutation} = useAuth();
+  const {characterMutation} = useUser();
   const {mutate: characterMutate} = characterMutation;
   return (
     <View

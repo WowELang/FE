@@ -7,7 +7,7 @@ import FriendsScreens from '../app/Friends/screens/FriendsScreens';
 import SettingScreen from '../app/Settings/SettingScreen';
 import {Board, Chat, Friends, Home, Setting} from '../assets';
 import {colors} from '../constants/colors';
-import {useAuth} from '../hooks/useAuth';
+import {useUser} from '../hooks/useUser';
 import ChatNavigator, {ChatstackParamList} from './ChatNavigator';
 import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
 import InitialSelectNavigator from './InitialSelectNavigator';
@@ -23,7 +23,7 @@ export type RootStackParamList = {
 const RootBottomTab = createBottomTabNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  const {userProfileQuery} = useAuth();
+  const {userProfileQuery} = useUser();
   const {data: userData} = userProfileQuery;
 
   return userData?.nickname === null ? (

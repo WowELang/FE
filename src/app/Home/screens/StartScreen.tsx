@@ -47,7 +47,9 @@ const StartScreen = ({navigation}: StartScreenProps) => {
           title="시작하기"
           active
           handlerFn={() => {
-            queryClient.invalidateQueries({queryKey: ['user', 'profile']});
+            queryClient.invalidateQueries({
+              queryKey: ['user', 'auth', 'profile'],
+            });
           }}
         />
       </View>
