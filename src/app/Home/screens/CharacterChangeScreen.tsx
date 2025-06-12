@@ -6,8 +6,9 @@ import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
-import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
+import {useUser} from '../../../hooks/useUser';
 import {HomeStackParamList} from '../../../navigators/HomeNavigator';
 
 type CharacterChangeScreenProps = {
@@ -20,9 +21,14 @@ const CharacterChangeScreen = ({
   route,
 }: CharacterChangeScreenProps) => {
   const type = route.params.type;
+  const {myProfileQuery, changeCharacterMutation} = useUser();
+  const {data: userData} = myProfileQuery;
+  const {mutate: changeCharacterMutate} = changeCharacterMutation;
+  const [selectedColor, setSelectedColor] = useState(
+    userData?.character.colorId,
+  );
+  const [selectedFace, setSelectedFace] = useState(userData?.character.maskId);
 
-  const [selectedColor, setSelectedColor] = useState('');
-  const [selectedFace, setSelectedFace] = useState('');
   return (
     <View
       style={{
@@ -45,39 +51,46 @@ const CharacterChangeScreen = ({
           gap: 15,
         }}>
         {type === 'color'
-          ? CHARACTERCOLOR.map(item => (
+          ? CHARACTERCOLOR.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedColor(item);
+                  setSelectedColor(idx);
                 }}>
                 <Profile
                   type="normal"
                   color={item}
                   size={118}
-                  active={selectedColor === item}
+                  active={selectedColor === idx}
                 />
               </Pressable>
             ))
-          : CHARACTERFACE.map(item => (
+          : CHARACTERMASK.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedFace(item);
+                  setSelectedFace(idx);
                 }}>
                 <Profile
                   type={item}
                   color="pink"
                   size={118}
-                  active={selectedFace === item}
+                  active={selectedFace === idx}
                 />
               </Pressable>
             ))}
       </View>
       <ConfirmButton
         title="변경하기"
-        active={type === 'color' ? !!selectedColor : !!selectedFace}
-        handlerFn={() => {}}
+        active={
+          type === 'color'
+            ? selectedColor !== userData?.character.colorId
+            : selectedFace !== userData?.character.maskId
+        }
+        handlerFn={() => {
+          changeCharacterMutate({colorId: selectedColor, maskId: selectedFace});
+          navigation.reset({index: 0, routes: [{name: 'Home'}]});
+        }}
       />
     </View>
   );
