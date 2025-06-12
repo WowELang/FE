@@ -70,15 +70,13 @@ const TermsScreen = ({navigation}: TermsScreenProps) => {
             </Pressable>
             <View style={{gap: 7}}>
               <Typography size={20} bold>
-                매너있게 행동하기
+                존중하는 태도 갖기
               </Typography>
               <View>
                 <Typography size={18}>
-                  우리 모두 학교의 구성원입니다!
+                  상대방도 나처럼 소중한 사람입니다.
                 </Typography>
-                <Typography size={18}>
-                  언제 어디서 만나게 될지 몰라요!
-                </Typography>
+                <Typography size={18}>서로 배려 하며 사용해요!</Typography>
               </View>
             </View>
           </View>
@@ -91,15 +89,11 @@ const TermsScreen = ({navigation}: TermsScreenProps) => {
             </Pressable>
             <View style={{gap: 7}}>
               <Typography size={20} bold>
-                매너있게 행동하기
+                건강한 소통하기
               </Typography>
               <View>
-                <Typography size={18}>
-                  우리 모두 학교의 구성원입니다!
-                </Typography>
-                <Typography size={18}>
-                  언제 어디서 만나게 될지 몰라요!
-                </Typography>
+                <Typography size={18}>욕설이나 비방은 NO!</Typography>
+                <Typography size={18}>기분 좋은 대화를 나눠요!</Typography>
               </View>
             </View>
           </View>

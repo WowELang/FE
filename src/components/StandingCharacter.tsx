@@ -3,6 +3,7 @@ import {
   NarrowShakingBin,
   NormalShakingBin,
   SingleShakingBin,
+  SmileShakingBin,
   TriangleShakingBin,
   WideShakingBin,
 } from '../assets';
@@ -45,6 +46,13 @@ const StandingCharacter = ({color, face}: StandingCharacterProps) => {
     case 'triangle':
       return (
         <TriangleShakingBin
+          fill={color}
+          style={{position: 'absolute', zIndex: 2, top: 90, left: 43}}
+        />
+      );
+    case 'smile':
+      return (
+        <SmileShakingBin
           fill={color}
           style={{position: 'absolute', zIndex: 2, top: 90, left: 43}}
         />

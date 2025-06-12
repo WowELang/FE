@@ -3,73 +3,93 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
+import {useFriend} from '../../../hooks/useChat';
+import {useProfile} from '../../../hooks/useUser';
 import {RequestModalProps} from './RequestModal';
 
 interface RequestItemProps {
-  name: string;
-  dept: string;
-  interests: string[];
+  requestId: string;
+  userId: number;
   date: string;
   modalHandler: ({
     isOpen,
-    name,
+    nickname,
     type,
   }: Omit<RequestModalProps, 'closeFn'>) => void;
 }
 
 const RequestItem = ({
-  name,
-  dept,
-  interests,
+  requestId,
+  userId,
   date,
   modalHandler,
 }: RequestItemProps) => {
+  const {friendResponseMutation} = useFriend();
+  const {mutate} = friendResponseMutation;
+  const {data} = useProfile(userId);
+  const translatedDate = new Date(date);
+
   return (
-    <View style={styles.box}>
-      <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
-        <View style={{flexDirection: 'row', gap: 22}}>
-          <Profile size={60} color="pink" type="normal" />
-          <View style={{gap: 10}}>
-            <Typography size={16} bold>
-              {name}
-            </Typography>
-            <Typography size={16} color={colors.gray.primary}>
-              {dept}
-            </Typography>
-            <View style={{flexDirection: 'row', gap: 2}}>
-              {interests.map((item, idx) => (
-                <Typography key={`${item}-${idx}`} size={10} style={styles.tag}>
-                  {item}
-                </Typography>
-              ))}
+    data && (
+      <View style={styles.box}>
+        <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
+          <View style={{flexDirection: 'row', gap: 22}}>
+            <Profile size={60} color="pink" type="normal" />
+            <View style={{gap: 10}}>
+              <Typography size={16} bold numberOfLines={1} style={{width: 180}}>
+                {data.result.nickname}
+              </Typography>
+              <Typography size={16} color={colors.gray.primary}>
+                {data.result?.countryOrMajor}
+              </Typography>
+              <View style={{flexDirection: 'row', gap: 2}}>
+                {data.result.interests.map((item, idx) => (
+                  <Typography
+                    key={`${item.name}-${idx}`}
+                    size={10}
+                    style={styles.tag}>
+                    {item.name}
+                  </Typography>
+                ))}
+              </View>
             </View>
           </View>
+          <Typography size={12} color={colors.gray.primary}>
+            {`${translatedDate.getMonth() + 1}/${translatedDate.getDate()}`}
+          </Typography>
         </View>
-        <Typography size={12} color={colors.gray.primary}>
-          {date}
-        </Typography>
+        <View style={{flexDirection: 'row', gap: 4}}>
+          <Pressable
+            style={[styles.button, {backgroundColor: colors.blue.primary}]}
+            onPress={() => {
+              mutate({requestId: requestId, state: 'accept'});
+              modalHandler({
+                isOpen: true,
+                nickname: data.result.nickname,
+                type: 'Accept',
+              });
+            }}>
+            <Typography size={12} color={colors.white} bold>
+              수락
+            </Typography>
+          </Pressable>
+          <Pressable
+            style={[styles.button, {backgroundColor: colors.gray.primary}]}
+            onPress={() => {
+              mutate({requestId: requestId, state: 'reject'});
+              modalHandler({
+                isOpen: true,
+                nickname: data.result.nickname,
+                type: 'Reject',
+              });
+            }}>
+            <Typography size={12} color={colors.white} bold>
+              거부
+            </Typography>
+          </Pressable>
+        </View>
       </View>
-      <View style={{flexDirection: 'row', gap: 4}}>
-        <Pressable
-          style={[styles.button, {backgroundColor: colors.blue.primary}]}
-          onPress={() => {
-            modalHandler({isOpen: true, name: name, type: 'Accept'});
-          }}>
-          <Typography size={12} color={colors.white} bold>
-            수락
-          </Typography>
-        </Pressable>
-        <Pressable
-          style={[styles.button, {backgroundColor: colors.gray.primary}]}
-          onPress={() => {
-            modalHandler({isOpen: true, name: name, type: 'Reject'});
-          }}>
-          <Typography size={12} color={colors.white} bold>
-            거부
-          </Typography>
-        </Pressable>
-      </View>
-    </View>
+    )
   );
 };
 

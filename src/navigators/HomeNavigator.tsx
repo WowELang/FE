@@ -14,7 +14,7 @@ const HomeNavigator = () => {
   return (
     <HomeStack.Navigator
       screenOptions={{headerShown: false}}
-      initialRouteName="Home">
+      initialRouteName={'Home'}>
       <HomeStack.Screen name={'Home'} component={HomeScreen} />
       <HomeStack.Screen
         name={'CharacterMenu'}

@@ -4,6 +4,8 @@ export {default as NormalShakingBin} from './characters/normal_shaking_bin.svg';
 export {default as NormalStandingBin} from './characters/normal_standing_bin.svg';
 export {default as SingleShakingBin} from './characters/single_shaking_bin.svg';
 export {default as SingleStandingBin} from './characters/single_standing_bin.svg';
+export {default as SmileShakingBin} from './characters/smile_shaking_bin.svg';
+export {default as SmileStandingBin} from './characters/smile_standing_bin.svg';
 export {default as TriangleShakingBin} from './characters/triangle_shaking_bin.svg';
 export {default as TriangleStandingBin} from './characters/triangle_standing_bin.svg';
 export {default as TwoBins} from './characters/two_bins.svg';

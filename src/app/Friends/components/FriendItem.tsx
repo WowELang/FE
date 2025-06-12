@@ -1,29 +1,59 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import {Mail, MailCheck} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
+import {useFriend} from '../../../hooks/useChat';
+import {CharacterType} from '../../../types/dto/UserProfileDto';
 
 interface FriendItemProps {
+  id: number;
   name: string;
-  dept: string;
+  major: string;
   interests: string[];
+  character: CharacterType;
 }
 
-const FriendItem = ({name, dept, interests}: FriendItemProps) => {
+const FriendItem = ({
+  id,
+  name,
+  major,
+  interests,
+  character,
+}: FriendItemProps) => {
   const [isSent, setIsSent] = useState(false);
+
+  const {friendRequestMutation} = useFriend();
+
+  const {
+    mutate: requestMutate,
+    status,
+    error,
+    isSuccess,
+  } = friendRequestMutation;
+
+  useEffect(() => {
+    console.log('status', status);
+    console.log('error', error);
+    console.log('issuccess', isSuccess);
+  }, [status, error, isSuccess]);
 
   return (
     <View style={styles.box}>
       <View style={{flexDirection: 'row', gap: 22}}>
-        <Profile type="normal" color="brown" size={60} />
+        <Profile
+          type={CHARACTERMASK[character.maskId]}
+          color={CHARACTERCOLOR[character.colorId]}
+          size={60}
+        />
         <View style={{gap: 10}}>
-          <Typography size={16} bold>
+          <Typography size={16} bold style={{width: 230}}>
             {name}
           </Typography>
           <Typography size={16} color={colors.gray.primary}>
-            {dept}
+            {major}
           </Typography>
           <View style={{flexDirection: 'row', gap: 2}}>
             {interests.map((item, idx) => (
@@ -45,6 +75,7 @@ const FriendItem = ({name, dept, interests}: FriendItemProps) => {
         <Pressable
           style={{alignItems: 'center'}}
           onPress={() => {
+            requestMutate(id);
             setIsSent(true);
           }}>
           <Mail fill={colors.gray.primary} />

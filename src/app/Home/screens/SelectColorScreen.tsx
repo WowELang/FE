@@ -5,15 +5,15 @@ import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
-import {CHARACTERFACE} from '../../../constants/character';
+import {CHARACTERCOLOR} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
-interface SelectFaceScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'SelecetColor'>;
+interface SelectColorScreenProps {
+  navigation: StackNavigationProp<InitialSelectStackParamList, 'SelecetColor'>;
 }
-const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
-  const [selectedFace, setSelectedFace] = useState('');
+const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
+  const [selectedColor, setSelectedColor] = useState(-1);
 
   return (
     <View
@@ -33,7 +33,7 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
         <View style={{gap: 30}}>
           <View style={{gap: 25}}>
             <Typography size={28} bold>
-              표정을 골라주세요
+              캐릭터를 골라주세요
             </Typography>
             <Typography size={12}>나중에 설정에서 수정 가능합니다.</Typography>
           </View>
@@ -44,17 +44,17 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
               gap: 15,
               justifyContent: 'center',
             }}>
-            {CHARACTERFACE.map(item => (
+            {CHARACTERCOLOR.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedFace(item);
+                  setSelectedColor(idx);
                 }}>
                 <Profile
-                  type={item}
-                  color={'red'}
+                  type="normal"
+                  color={item}
                   size={118}
-                  active={selectedFace === item}
+                  active={selectedColor === idx}
                 />
               </Pressable>
             ))}
@@ -62,9 +62,9 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
         </View>
         <ConfirmButton
           title="완료"
-          active={!!selectedFace}
+          active={selectedColor !== -1}
           handlerFn={() => {
-            navigation.navigate('Nickname');
+            navigation.navigate('SelecetFace', {color: selectedColor});
           }}
         />
       </View>
@@ -72,4 +72,4 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
   );
 };
 
-export default SelectFaceScreen;
+export default SelectColorScreen;

@@ -9,7 +9,6 @@ import {
 } from 'react-native';
 
 interface PinCodeInputProps {
-  onComplete?: (pin: string) => void;
   pinLength?: number;
   autoFocus?: boolean;
   secure?: boolean;

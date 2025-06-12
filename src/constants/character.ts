@@ -1,4 +1,4 @@
-import {characterColorType, characterFaceType} from '../components/Profile';
+import {characterColorType, characterMaskType} from '../components/Profile';
 
 export const CHARACTERCOLOR: characterColorType[] = [
   'pink',
@@ -9,11 +9,11 @@ export const CHARACTERCOLOR: characterColorType[] = [
   'red',
 ];
 
-export const CHARACTERFACE: characterFaceType[] = [
+export const CHARACTERMASK: characterMaskType[] = [
   'normal',
   'narrow',
   'wide',
   'single',
   'triangle',
-  'none',
+  'smile',
 ];

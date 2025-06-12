@@ -1,6 +1,7 @@
-import React, {useState} from 'react';
+import React, {useEffect, useState} from 'react';
 
 import {FlatList, StyleSheet} from 'react-native';
+import {useFriend} from '../../../hooks/useChat';
 import RequestItem from './RequestItem';
 import RequestModal, {RequestModalProps} from './RequestModal';
 
@@ -9,17 +10,24 @@ const RequestList = () => {
     Omit<RequestModalProps, 'closeFn'>
   >({
     isOpen: false,
-    name: '',
+    nickname: '',
     type: undefined,
   });
 
   const requestModalHandler = ({
     isOpen,
-    name,
+    nickname,
     type,
   }: Omit<RequestModalProps, 'closeFn'>) => {
-    setModalState({isOpen: isOpen, name: name, type: type});
+    setModalState({isOpen: isOpen, nickname: nickname, type: type});
   };
+
+  const {friendListRequestQuery} = useFriend();
+  const {data} = friendListRequestQuery;
+
+  useEffect(() => {
+    console.log(data);
+  }, [data]);
 
   return (
     <>
@@ -28,26 +36,18 @@ const RequestList = () => {
         closeFn={() => {
           setModalState({...modalState, isOpen: false});
         }}
-        name={modalState.name}
+        nickname={modalState.nickname}
         type={modalState.type}
       />
       <FlatList
         contentContainerStyle={styles.container}
-        data={[
-          {
-            name: '맛있는 돈카츠',
-            dept: '일본',
-            interests: ['노래방', '맛집', '여행', '요리'],
-            date: '5/18',
-          },
-        ]}
+        data={data}
         renderItem={({item, index}) => (
           <RequestItem
-            key={`${item}-${index}`}
-            name={item.name}
-            dept={item.dept}
-            interests={item.interests}
-            date={item.date}
+            key={`${item.id}-${index}`}
+            userId={item.requesterId}
+            requestId={item.id}
+            date={item.createdAt}
             modalHandler={requestModalHandler}
           />
         )}

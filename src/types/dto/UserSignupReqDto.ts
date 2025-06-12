@@ -7,8 +7,10 @@ export interface UserSignupReqDto {
   email: string;
   password: string;
   name: string;
+  country: string | null;
   birthday: string;
-  major: string;
+  major: string | null;
   gender: GenderType;
-  userType: UserType;
+  usertype: UserType;
+  code: number;
 }

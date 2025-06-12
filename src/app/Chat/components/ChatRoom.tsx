@@ -1,13 +1,17 @@
-import React from 'react';
+import {useNavigation} from '@react-navigation/native';
+import {StackNavigationProp} from '@react-navigation/stack';
+import React, {useEffect} from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
+import {useProfile, useUser} from '../../../hooks/useUser';
+import {ChatstackParamList} from '../../../navigators/ChatNavigator';
 import {ChatRoomDto} from '../../../types/dto/ChatRoomDto';
 
 interface ChatRoomProps {
   roomData: ChatRoomDto;
-  onPressFn: () => void;
 }
 
 const getLastTime = (isoTime: string) => {
@@ -26,20 +30,42 @@ const getLastTime = (isoTime: string) => {
 };
 
 const ChatRoom = ({
-  roomData: {updatedAt, lastMessage},
-  onPressFn,
+  roomData: {id, participants, updatedAt, lastMessage},
 }: ChatRoomProps) => {
+  const navigation =
+    useNavigation<StackNavigationProp<ChatstackParamList, 'ChatRoomList'>>();
+  const {myProfileQuery} = useUser();
+  const {data: myData} = myProfileQuery;
+  const otherId =
+    parseInt(participants[0]) === myData?.userId
+      ? participants[1]
+      : participants[0];
+  const {data: otherData} = useProfile(parseInt(otherId));
+  useEffect(() => {
+    console.log(otherData);
+  }, [otherData]);
   return (
-    <Pressable style={styles.container} onPress={onPressFn}>
-      <Profile type="normal" color="red" size={48} />
+    <Pressable
+      style={styles.container}
+      onPress={() => {
+        navigation.navigate('Chat', {
+          roomId: id,
+          partnerData: otherData.result,
+        });
+      }}>
+      <Profile
+        type={CHARACTERMASK[otherData?.result.character.maskId]}
+        color={CHARACTERCOLOR[otherData?.result.character.colorId]}
+        size={48}
+      />
       <View style={styles.contentWrapper}>
         <View style={styles.roomInfo}>
           <View style={styles.userInfo}>
             <Typography size={12} bold>
-              userb
+              {otherData.result?.nickname}
             </Typography>
             <Typography size={10} color={colors.gray.primary}>
-              시각디자인과
+              {otherData.result?.countryOrMajor}
             </Typography>
           </View>
           <Typography size={12} color={colors.gray.primary}>
@@ -47,7 +73,7 @@ const ChatRoom = ({
           </Typography>
         </View>
         <Typography size={12} numberOfLines={1}>
-          {lastMessage?.content}
+          {lastMessage.type === 'IMAGE' ? '(사진)' : lastMessage?.content}
         </Typography>
       </View>
     </Pressable>

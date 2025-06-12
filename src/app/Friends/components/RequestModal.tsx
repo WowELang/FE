@@ -14,12 +14,12 @@ export type RequestModalType = 'Accept' | 'Reject' | undefined;
 
 export interface RequestModalProps {
   isOpen: boolean;
-  name: string;
+  nickname: string;
   type: RequestModalType;
   closeFn: () => void;
 }
 
-const RequestModal = ({isOpen, closeFn, name, type}: RequestModalProps) => {
+const RequestModal = ({isOpen, closeFn, nickname, type}: RequestModalProps) => {
   const navigation =
     useNavigation<
       CompositeNavigationProp<
@@ -44,7 +44,7 @@ const RequestModal = ({isOpen, closeFn, name, type}: RequestModalProps) => {
                   alignItems: 'flex-end',
                 }}>
                 <Typography size={24} bold>
-                  {name + ' '}
+                  {nickname + ' '}
                 </Typography>
                 <Typography size={16} style={{}}>
                   님{type === 'Accept' ? '과' : '의'}
@@ -65,7 +65,9 @@ const RequestModal = ({isOpen, closeFn, name, type}: RequestModalProps) => {
                   </Typography>
                   <Typography size={12}>에서</Typography>
                 </View>
-                <Typography size={12}>{name}님을 찾을 수 있어요.</Typography>
+                <Typography size={12}>
+                  {nickname}님을 찾을 수 있어요.
+                </Typography>
                 <TwoBins />
               </View>
             )}
@@ -76,10 +78,7 @@ const RequestModal = ({isOpen, closeFn, name, type}: RequestModalProps) => {
                 handlerFn={() => {
                   closeFn();
                   setTimeout(() => {
-                    navigation.navigate('ChatNav', {
-                      screen: 'Chat',
-                      params: {roomId: 'af'},
-                    });
+                    navigation.navigate('ChatNav', {screen: 'ChatRoomList'});
                   }, 200);
                 }}
               />

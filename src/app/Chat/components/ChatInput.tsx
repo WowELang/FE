@@ -7,14 +7,16 @@ import {
   TouchableWithoutFeedback,
   View,
 } from 'react-native';
+import {launchCamera, launchImageLibrary} from 'react-native-image-picker';
 import {Next, Picture} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
-import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {useAuth} from '../../../hooks/useAuth';
-import {useStompClient} from '../../../scoket';
-import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {useSendImage} from '../../../hooks/useChat';
+import {useUser} from '../../../hooks/useUser';
+import {useStompClient} from '../../../socket';
+import {ChatMessageDto, SendMessage} from '../../../types/dto/ChatMessageDto';
 import {useMessageStore} from '../../../utils/messageStore';
 
 interface ChatInputProps {
@@ -30,132 +32,154 @@ const ChatInput = ({
   roomId,
   closeMenu,
   toggleMenu,
-  addMessage,
 }: ChatInputProps) => {
   const {correctMessage, removeMessage} = useMessageStore(state => state);
   const [input, setInput] = useState('');
-  const [pictureModalOpen, setPictureModalOpen] = useState(false);
+  const [ImageModalOpen, setImageModalOpen] = useState(false);
 
   const stompClient = useStompClient();
-  const {userProfileQuery} = useAuth();
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
+  const {data: imageUrl, mutate: imageMutate, isPending} = useSendImage();
 
-  function sendMessage(messagePayload) {
-    // messagePayload는 아래 형식 중 하나
-    if (stompClient && stompClient.active && roomId) {
+  const sendMessage = (messagePayload: SendMessage) => {
+    if (stompClient && stompClient.active && roomId && userData) {
       stompClient.publish({
-        destination: `/app/chat.send.${roomId}`, // 메시지를 보낼 목적지 주소
-        headers: {'X-User-Id': userId}, // 필요시 추가 헤더
+        destination: `/app/chat.send.${roomId}`,
         body: JSON.stringify(messagePayload),
       });
       console.log('Sent message:', messagePayload);
-    } else {
-      console.error('STOMP client not active or no room selected.');
     }
-  }
+  };
+
+  const openGallery = () => {
+    launchImageLibrary({mediaType: 'mixed', selectionLimit: 1}, response => {
+      if (response.assets) imageMutate(response.assets[0]);
+      setImageModalOpen(false);
+    });
+  };
+  const openCamera = () => {
+    launchCamera({mediaType: 'mixed'}, response => {
+      if (response.assets) imageMutate(response.assets[0]);
+      setImageModalOpen(false);
+    });
+  };
 
   useEffect(() => {
-    setInput(correctMessage ? correctMessage.content : '');
+    if (correctMessage) setInput(correctMessage ? correctMessage.content : '');
   }, [correctMessage]);
 
+  useEffect(() => {
+    if (imageUrl) {
+      sendMessage({type: 'IMAGE', s3Key: imageUrl});
+    }
+  }, [imageUrl]);
+
   return (
-    <View style={styles.container}>
-      <Modal
-        visible={pictureModalOpen}
-        transparent
-        onRequestClose={() => {
-          setPictureModalOpen(false);
-        }}>
-        <TouchableWithoutFeedback
-          style={{}}
-          onPress={() => {
-            setPictureModalOpen(false);
+    userData && (
+      <View style={styles.container}>
+        <Modal
+          visible={ImageModalOpen}
+          transparent
+          onRequestClose={() => {
+            setImageModalOpen(false);
           }}>
-          <View
-            style={{
-              backgroundColor: 'rgba(0,0,0,0.4)',
-              flex: 1,
-              justifyContent: 'center',
-              alignItems: 'center',
+          <TouchableWithoutFeedback
+            style={{}}
+            onPress={() => {
+              setImageModalOpen(false);
             }}>
-            <View style={{backgroundColor: colors.white, borderRadius: 20}}>
-              <Pressable
-                style={({pressed}) => ({
-                  paddingHorizontal: 82,
-                  paddingVertical: 26,
-                  backgroundColor: pressed
-                    ? colors.blue.secondary
-                    : colors.white,
-                  borderTopRightRadius: 20,
-                  borderTopLeftRadius: 20,
-                })}>
-                <Typography size={16} bold>
-                  사진첩 열기
-                </Typography>
-              </Pressable>
-              <Pressable
-                style={({pressed}) => ({
-                  paddingHorizontal: 82,
-                  paddingVertical: 26,
-                  backgroundColor: pressed
-                    ? colors.blue.secondary
-                    : colors.white,
-                  borderBottomRightRadius: 20,
-                  borderBottomLeftRadius: 20,
-                })}>
-                <Typography size={16} bold>
-                  카메라 열기
-                </Typography>
-              </Pressable>
+            <View
+              style={{
+                backgroundColor: 'rgba(0,0,0,0.4)',
+                flex: 1,
+                justifyContent: 'center',
+                alignItems: 'center',
+              }}>
+              {
+                <View style={{backgroundColor: colors.white, borderRadius: 20}}>
+                  <Pressable
+                    style={({pressed}) => ({
+                      paddingHorizontal: 82,
+                      paddingVertical: 26,
+                      backgroundColor: pressed
+                        ? colors.blue.secondary
+                        : colors.white,
+                      borderTopRightRadius: 20,
+                      borderTopLeftRadius: 20,
+                    })}
+                    onPress={openGallery}>
+                    <Typography size={16} bold>
+                      사진첩 열기
+                    </Typography>
+                  </Pressable>
+                  <Pressable
+                    style={({pressed}) => ({
+                      paddingHorizontal: 82,
+                      paddingVertical: 26,
+                      backgroundColor: pressed
+                        ? colors.blue.secondary
+                        : colors.white,
+                      borderBottomRightRadius: 20,
+                      borderBottomLeftRadius: 20,
+                    })}
+                    onPress={openCamera}>
+                    <Typography size={16} bold>
+                      카메라 열기
+                    </Typography>
+                  </Pressable>
+                </View>
+              }
             </View>
-          </View>
-        </TouchableWithoutFeedback>
-      </Modal>
-      <View style={styles.contentWrapper}>
-        <Pressable onPress={toggleMenu}>
-          <Profile
-            type={CHARACTERFACE[userProfileQuery.data?.character.maskId]}
-            color={CHARACTERCOLOR[userProfileQuery.data?.character.colorId]}
-            size={24}
+          </TouchableWithoutFeedback>
+        </Modal>
+        <View style={styles.contentWrapper}>
+          <Pressable onPress={toggleMenu}>
+            <Profile
+              type={CHARACTERMASK[userData.character.maskId]}
+              color={CHARACTERCOLOR[userData.character.colorId]}
+              size={24}
+            />
+          </Pressable>
+          <View style={styles.divider} />
+          <TextInput
+            style={styles.input}
+            value={input}
+            onChangeText={text => {
+              setInput(text);
+            }}
+            multiline
+            placeholder="채팅을 입력하세요."
+            placeholderTextColor={colors.gray.primary}
+            onFocus={closeMenu}
           />
-        </Pressable>
-        <View style={styles.divider} />
-        <TextInput
-          style={styles.input}
-          value={input}
-          onChangeText={text => {
-            setInput(text);
-          }}
-          multiline
-          placeholder="채팅을 입력하세요."
-          placeholderTextColor={colors.gray.primary}
-          onFocus={closeMenu}
-        />
-        <Pressable
-          onPress={() => {
-            sendMessage({
-              type: correctMessage ? 'CORRECTION' : 'TEXT',
-              content: input,
-              originalMessage: correctMessage?.content,
-            });
-            setInput('');
-            removeMessage();
-          }}>
-          <Next fill={colors.gray.primary} width={24} height={24} />
-        </Pressable>
+          <Pressable
+            onPress={() => {
+              sendMessage({
+                type: correctMessage ? 'CORRECTION' : 'TEXT',
+                content: input,
+                originalMessage: correctMessage && correctMessage.content,
+              });
+              setInput('');
+              removeMessage();
+            }}>
+            <Next fill={colors.gray.primary} width={24} height={24} />
+          </Pressable>
+        </View>
+        {isMenuOpen && (
+          <Pressable
+            style={styles.pictureBtn}
+            onPress={() => {
+              setImageModalOpen(true);
+            }}>
+            <Picture fill={colors.black.primary} />
+            <Typography size={12} bold>
+              사진 보내기
+            </Typography>
+          </Pressable>
+        )}
       </View>
-      {isMenuOpen && (
-        <Pressable
-          style={styles.pictureBtn}
-          onPress={() => {
-            setPictureModalOpen(true);
-          }}>
-          <Picture fill={colors.black.primary} />
-          <Typography size={12} bold>
-            사진 보내기
-          </Typography>
-        </Pressable>
-      )}
-    </View>
+    )
   );
 };
 

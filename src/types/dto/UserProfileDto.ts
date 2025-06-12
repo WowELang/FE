@@ -1,11 +1,11 @@
 import {UserType} from './UserSignupReqDto';
 
-type CharacterType = {
+export type CharacterType = {
   colorId: number;
   maskId: number;
 };
 
-type InterestType = {
+export type InterestType = {
   id: number;
   name: string;
 };
@@ -19,4 +19,10 @@ export interface UserProfileDto {
   major: string;
   usertype: UserType;
   country: string;
+}
+export interface OtherUserProfileResponse {
+  nickname: string | null;
+  character: CharacterType;
+  interests: InterestType[];
+  countryOrMajor: string;
 }

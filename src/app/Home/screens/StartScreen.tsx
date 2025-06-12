@@ -1,6 +1,7 @@
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
+import {queryClient} from '../../../../App';
 import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
@@ -46,7 +47,9 @@ const StartScreen = ({navigation}: StartScreenProps) => {
           title="시작하기"
           active
           handlerFn={() => {
-            navigation.replace();
+            queryClient.invalidateQueries({
+              queryKey: ['user', 'profile'],
+            });
           }}
         />
       </View>

@@ -24,14 +24,14 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
       control={control}
       render={({field: {value, onChange}}) => {
         switch (field) {
-          case 'userType':
+          case 'usertype':
             return (
               <View>
                 <ChoiceButton
                   title={['유학생 튜티', '재학생 튜터']}
                   subTitle={['TUTEE', 'TUTOR']}
                   icon={[<Foreign fill="#000" />, <Native fill="#000" />]}
-                  value={['foreign', 'native']}
+                  value={['FOREIGN', 'NATIVE']}
                   state={typeof value === 'string' ? value : ''}
                   onChangeFn={onChange}
                 />
@@ -107,7 +107,7 @@ const IntroduceForm = ({field, control, data}: IntroduceFormProps) => {
                   }
                   handleFn={onChange}
                 />
-                {data.userType === 'foreign' && (
+                {data.usertype === 'FOREIGN' && (
                   <Pressable
                     style={{
                       backgroundColor: '#fff',

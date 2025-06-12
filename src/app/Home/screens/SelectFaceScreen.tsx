@@ -1,3 +1,4 @@
+import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
@@ -5,16 +6,20 @@ import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
-import {CHARACTERCOLOR} from '../../../constants/character';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {useUser} from '../../../hooks/useUser';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
-interface SelectColorScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'SelecetColor'>;
+interface SelectFaceScreenProps {
+  navigation: StackNavigationProp<InitialSelectStackParamList, 'SelecetFace'>;
+  route: RouteProp<InitialSelectStackParamList, 'SelecetFace'>;
 }
-const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
-  const [selectedColor, setSelectedColor] = useState('');
-
+const SelectFaceScreen = ({navigation, route}: SelectFaceScreenProps) => {
+  const selectedColor = route.params.color;
+  const [selectedFace, setSelectedFace] = useState(-1);
+  const {characterMutation} = useUser();
+  const {mutate: characterMutate} = characterMutation;
   return (
     <View
       style={{
@@ -33,7 +38,7 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
         <View style={{gap: 30}}>
           <View style={{gap: 25}}>
             <Typography size={28} bold>
-              캐릭터를 골라주세요
+              표정을 골라주세요
             </Typography>
             <Typography size={12}>나중에 설정에서 수정 가능합니다.</Typography>
           </View>
@@ -44,17 +49,17 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
               gap: 15,
               justifyContent: 'center',
             }}>
-            {CHARACTERCOLOR.map(item => (
+            {CHARACTERMASK.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedColor(item);
+                  setSelectedFace(idx);
                 }}>
                 <Profile
-                  type="normal"
-                  color={item}
+                  type={item}
+                  color={CHARACTERCOLOR[selectedColor]}
                   size={118}
-                  active={selectedColor === item}
+                  active={selectedFace === idx}
                 />
               </Pressable>
             ))}
@@ -62,9 +67,10 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
         </View>
         <ConfirmButton
           title="완료"
-          active={!!selectedColor}
+          active={!!selectedFace}
           handlerFn={() => {
-            navigation.navigate('SelecetFace');
+            characterMutate({colorId: selectedColor, maskId: selectedFace});
+            navigation.navigate('SelectNickname');
           }}
         />
       </View>
@@ -72,4 +78,4 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
   );
 };
 
-export default SelectColorScreen;
+export default SelectFaceScreen;

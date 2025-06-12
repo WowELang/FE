@@ -1,25 +1,75 @@
-import {useMutation, useQuery} from '@tanstack/react-query';
+import {useMutation} from '@tanstack/react-query';
 import {useMMKVStorage} from 'react-native-mmkv-storage';
 import {storage} from '../../App';
-import {getUserProfile, postLogin} from '../api/auth';
-import {axiosInstance} from '../api/axios';
+import {
+  postCheckId,
+  postEmailVerification,
+  postEmailVerificationCode,
+  postLogin,
+  postRefresh,
+} from '../api/auth';
+import {axiosApiInstance} from '../api/axios';
+import {Tokens} from '../types/dto/LoginReqDto';
 
 export const useAuth = () => {
-  const [token, setToken] = useMMKVStorage('token', storage, '');
+  const [tokens, setTokens] = useMMKVStorage<Tokens>('tokens', storage, {
+    accessToken: '',
+    refreshToken: '',
+  });
 
   const loginMutation = useMutation({
     mutationFn: postLogin,
-    onSuccess: async ({result}) => {
-      setToken(result);
-      axiosInstance.defaults.headers.common.Authorization = `Bearer ${result}`;
+    onSuccess: ({result}) => {
+      setTokens({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
+      axiosApiInstance.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`;
+    },
+    onError: error => {
+      console.log(error);
     },
   });
 
-  const userProfileQuery = useQuery({
-    queryKey: ['auth', 'user'],
-    queryFn: getUserProfile,
-    enabled: !!axiosInstance.defaults.headers.common.Authorization,
+  const refreshMutation = useMutation({
+    mutationFn: postRefresh,
+    onSuccess: ({result}) => {
+      setTokens({
+        accessToken: result.accessToken,
+        refreshToken: result.refreshToken,
+      });
+      axiosApiInstance.defaults.headers.common.Authorization = `Bearer ${result.accessToken}`;
+    },
+    onError: () => {
+      setTokens({accessToken: '', refreshToken: ''});
+    },
   });
 
-  return {loginMutation, userProfileQuery};
+  const checkIdMutation = useMutation({
+    mutationFn: postCheckId,
+    onError: error => {
+      console.log(error);
+    },
+  });
+
+  const emailMutation = useMutation({
+    mutationFn: postEmailVerification,
+    onError: error => {
+      console.log(error);
+    },
+  });
+
+  const emailCodeMutation = useMutation({
+    mutationFn: postEmailVerificationCode,
+    onError: error => {
+      console.log(error);
+    },
+  });
+
+  return {
+    loginMutation,
+    checkIdMutation,
+    emailMutation,
+    emailCodeMutation,
+  };
 };

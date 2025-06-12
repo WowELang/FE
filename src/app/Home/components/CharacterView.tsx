@@ -6,8 +6,9 @@ import {Character, Cloud, Dress, Sun} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import StandingCharacter from '../../../components/StandingCharacter';
 import Typography from '../../../components/Typography';
-import {CHARACTERCOLOR, CHARACTERFACE} from '../../../constants/character';
-import {useAuth} from '../../../hooks/useAuth';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
+import {colors} from '../../../constants/colors';
+import {useUser} from '../../../hooks/useUser';
 import {HomeStackParamList} from '../../../navigators/HomeNavigator';
 
 const {width} = Dimensions.get('window');
@@ -41,6 +42,7 @@ const AnimatedCloud = ({x, y, delay}: AnimatedCloudProps) => {
 
     startAnimation();
   }, []);
+
   return (
     <Animated.View
       style={[
@@ -57,24 +59,23 @@ const AnimatedCloud = ({x, y, delay}: AnimatedCloudProps) => {
 
 const CharacterView = () => {
   const navigation = useNavigation<StackNavigationProp<HomeStackParamList>>();
-  const {userProfileQuery} = useAuth();
-  const {data} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
-  useEffect(() => {});
-  return !data ? (
+  return !userData ? (
     <Typography size={50} bold>
       에러 발생!
     </Typography>
   ) : (
     <View style={styles.container}>
       <StandingCharacter
-        color={CHARACTERCOLOR[data.character.colorId]}
-        face={CHARACTERFACE[data.character.maskId]}
+        color={colors.character[CHARACTERCOLOR[userData.character.colorId]]}
+        face={CHARACTERMASK[userData.character.maskId]}
       />
       <View style={styles.sky}>
         <View style={styles.header}>
           <Typography size={16} bold color="#989A9F">
-            {data.nickname}
+            {userData.nickname}
           </Typography>
           <View style={{flexDirection: 'row', gap: 8}}>
             <Dress fill={'#989A9F'} />
@@ -96,11 +97,11 @@ const CharacterView = () => {
       <View style={styles.ground}>
         <View style={{flexDirection: 'row', gap: 15}}>
           <Typography size={28} bold>
-            {data.name}
+            {userData.name}
           </Typography>
           <Typography size={20}>
-            {data.usertype === 'NATIVE' ? '재학생' : '교환학생'} |{' '}
-            {data.usertype === 'NATIVE' ? data.major : data.country}
+            {userData.usertype === 'NATIVE' ? '재학생' : '교환학생'} |{' '}
+            {userData.usertype === 'NATIVE' ? userData.major : userData.country}
           </Typography>
         </View>
         <ConfirmButton
