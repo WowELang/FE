@@ -6,14 +6,20 @@ import ConfirmButton from '../../../components/ConfirmButton';
 import Typography from '../../../components/Typography';
 import UnderlinedInput from '../../../components/UnderlinedInput';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {useAuth} from '../../../hooks/useAuth';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
-interface NicknameScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'Nickname'>;
+interface SelectNicknameScreenProps {
+  navigation: StackNavigationProp<
+    InitialSelectStackParamList,
+    'SelectNickname'
+  >;
 }
-const NicknameScreen = ({navigation}: NicknameScreenProps) => {
+const SelectNicknameScreen = ({navigation}: SelectNicknameScreenProps) => {
   const [nickname, setNickname] = useState('');
 
+  const {nicknameMutation} = useAuth();
+  const {mutate: nicknameMutate} = nicknameMutation;
   return (
     <View
       style={{
@@ -49,6 +55,7 @@ const NicknameScreen = ({navigation}: NicknameScreenProps) => {
           title="완료"
           active={!!nickname}
           handlerFn={() => {
+            nicknameMutate(nickname);
             navigation.navigate('Start');
           }}
         />
@@ -57,4 +64,4 @@ const NicknameScreen = ({navigation}: NicknameScreenProps) => {
   );
 };
 
-export default NicknameScreen;
+export default SelectNicknameScreen;

@@ -4,18 +4,19 @@ import {
   NarrowStandingBin,
   NormalStandingBin,
   SingleStandingBin,
+  SmileStandingBin,
   TriangleStandingBin,
   WideStandingBin,
 } from '../assets';
 import {colors} from '../constants/colors';
 
-export type characterFaceType =
+export type characterMaskType =
   | 'normal'
   | 'narrow'
   | 'wide'
   | 'single'
   | 'triangle'
-  | 'none';
+  | 'smile';
 export type characterColorType =
   | 'pink'
   | 'green'
@@ -25,7 +26,7 @@ export type characterColorType =
   | 'red';
 
 interface ProfileProps {
-  type: characterFaceType;
+  type: characterMaskType;
   color: characterColorType;
   size: number;
   active?: boolean;
@@ -76,6 +77,13 @@ const Profile = ({type, color, size, active}: ProfileProps) => {
         )}
         {type === 'triangle' && (
           <TriangleStandingBin
+            fill={colors.character[color]}
+            style={{transform: [{translateY: size * 0.12}]}}
+            width={size * 0.66}
+          />
+        )}
+        {type === 'smile' && (
+          <SmileStandingBin
             fill={colors.character[color]}
             style={{transform: [{translateY: size * 0.12}]}}
             width={size * 0.66}

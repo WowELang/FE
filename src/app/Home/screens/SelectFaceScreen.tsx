@@ -1,3 +1,4 @@
+import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React, {useState} from 'react';
 import {Pressable, View} from 'react-native';
@@ -5,16 +6,20 @@ import {Back} from '../../../assets';
 import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
-import {CHARACTERFACE} from '../../../constants/character';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {useAuth} from '../../../hooks/useAuth';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface SelectFaceScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'SelecetColor'>;
+  navigation: StackNavigationProp<InitialSelectStackParamList, 'SelecetFace'>;
+  route: RouteProp<InitialSelectStackParamList, 'SelecetFace'>;
 }
-const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
-  const [selectedFace, setSelectedFace] = useState('');
-
+const SelectFaceScreen = ({navigation, route}: SelectFaceScreenProps) => {
+  const selectedColor = route.params.color;
+  const [selectedFace, setSelectedFace] = useState(-1);
+  const {characterMutation} = useAuth();
+  const {mutate: characterMutate} = characterMutation;
   return (
     <View
       style={{
@@ -44,17 +49,17 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
               gap: 15,
               justifyContent: 'center',
             }}>
-            {CHARACTERFACE.map(item => (
+            {CHARACTERMASK.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedFace(item);
+                  setSelectedFace(idx);
                 }}>
                 <Profile
                   type={item}
-                  color={'red'}
+                  color={CHARACTERCOLOR[selectedColor]}
                   size={118}
-                  active={selectedFace === item}
+                  active={selectedFace === idx}
                 />
               </Pressable>
             ))}
@@ -64,7 +69,8 @@ const SelectFaceScreen = ({navigation}: SelectFaceScreenProps) => {
           title="완료"
           active={!!selectedFace}
           handlerFn={() => {
-            navigation.navigate('Nickname');
+            characterMutate({colorId: selectedColor, maskId: selectedFace});
+            navigation.navigate('SelectNickname');
           }}
         />
       </View>

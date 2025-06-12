@@ -1,11 +1,11 @@
 import {UserType} from './UserSignupReqDto';
 
-type CharacterType = {
+export type CharacterType = {
   colorId: number;
   maskId: number;
 };
 
-type InterestType = {
+export type InterestType = {
   id: number;
   name: string;
 };

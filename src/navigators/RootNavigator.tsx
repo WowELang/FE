@@ -7,8 +7,10 @@ import FriendsScreens from '../app/Friends/screens/FriendsScreens';
 import SettingScreen from '../app/Settings/SettingScreen';
 import {Board, Chat, Friends, Home, Setting} from '../assets';
 import {colors} from '../constants/colors';
+import {useAuth} from '../hooks/useAuth';
 import ChatNavigator, {ChatstackParamList} from './ChatNavigator';
 import HomeNavigator, {HomeStackParamList} from './HomeNavigator';
+import InitialSelectNavigator from './InitialSelectNavigator';
 
 export type RootStackParamList = {
   HomeNav: NavigatorScreenParams<HomeStackParamList>;
@@ -21,7 +23,12 @@ export type RootStackParamList = {
 const RootBottomTab = createBottomTabNavigator<RootStackParamList>();
 
 const RootNavigator = () => {
-  return (
+  const {userProfileQuery} = useAuth();
+  const {data: userData} = userProfileQuery;
+
+  return userData?.nickname === null ? (
+    <InitialSelectNavigator />
+  ) : (
     <RootBottomTab.Navigator
       screenOptions={({route}) => ({
         tabBarIcon: ({color}) => {

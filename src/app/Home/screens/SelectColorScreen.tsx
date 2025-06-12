@@ -7,13 +7,13 @@ import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {CHARACTERCOLOR} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface SelectColorScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'SelecetColor'>;
+  navigation: StackNavigationProp<InitialSelectStackParamList, 'SelecetColor'>;
 }
 const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
-  const [selectedColor, setSelectedColor] = useState('');
+  const [selectedColor, setSelectedColor] = useState(-1);
 
   return (
     <View
@@ -44,17 +44,17 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
               gap: 15,
               justifyContent: 'center',
             }}>
-            {CHARACTERCOLOR.map(item => (
+            {CHARACTERCOLOR.map((item, idx) => (
               <Pressable
-                key={item}
+                key={`${item}-${idx}`}
                 onPress={() => {
-                  setSelectedColor(item);
+                  setSelectedColor(idx);
                 }}>
                 <Profile
                   type="normal"
                   color={item}
                   size={118}
-                  active={selectedColor === item}
+                  active={selectedColor === idx}
                 />
               </Pressable>
             ))}
@@ -62,9 +62,9 @@ const SelectColorScreen = ({navigation}: SelectColorScreenProps) => {
         </View>
         <ConfirmButton
           title="완료"
-          active={!!selectedColor}
+          active={selectedColor !== -1}
           handlerFn={() => {
-            navigation.navigate('SelecetFace');
+            navigation.navigate('SelecetFace', {color: selectedColor});
           }}
         />
       </View>

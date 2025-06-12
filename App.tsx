@@ -7,11 +7,10 @@
 
 import {NavigationContainer} from '@react-navigation/native';
 import {QueryClient, QueryClientProvider} from '@tanstack/react-query';
-import React, {useEffect} from 'react';
+import React from 'react';
 import {KeyboardAvoidingView, Platform} from 'react-native';
 import {MMKVLoader, useMMKVStorage} from 'react-native-mmkv-storage';
 import {SafeAreaProvider, SafeAreaView} from 'react-native-safe-area-context';
-import {axiosInstance} from './src/api/axios';
 import LanguageScreen from './src/app/Login/screens/LanguageScreen';
 import LoginNavigator from './src/navigators/LoginNavigator';
 import RootNavigator from './src/navigators/RootNavigator';
@@ -24,14 +23,12 @@ Object.assign('global', {
 });
 
 export const storage = new MMKVLoader().withEncryption().initialize();
-const queryClient = new QueryClient();
+export const queryClient = new QueryClient();
 function App(): React.JSX.Element {
   const languageChosen = true;
   const [token, setToken] = useMMKVStorage('token', storage);
   const isLoggedin = !!token;
-  useEffect(() => {
-    axiosInstance.defaults.headers.common.Authorization = `Bearer ${token}`;
-  });
+
   return (
     <SafeAreaProvider>
       <QueryClientProvider client={queryClient}>

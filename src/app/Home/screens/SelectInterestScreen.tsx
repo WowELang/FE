@@ -6,15 +6,22 @@ import ConfirmButton from '../../../components/ConfirmButton';
 import Tag from '../../../components/Tag';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
-import {INTERESTS} from '../../../constants/interests';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {useAuth} from '../../../hooks/useAuth';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface InterestScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'Interest'>;
+  navigation: StackNavigationProp<
+    InitialSelectStackParamList,
+    'SelectInterest'
+  >;
 }
 
 const InterestScreen = ({navigation}: InterestScreenProps) => {
-  const [selectedInterests, setSelectedInterests] = useState<string[]>([]);
+  const [selectedInterests, setSelectedInterests] = useState<number[]>([]);
+
+  const {interestQuery, interestMutation} = useAuth();
+  const {data: interestData} = interestQuery;
+  const {mutate: interestMutate} = interestMutation;
 
   return (
     <View
@@ -44,18 +51,20 @@ const InterestScreen = ({navigation}: InterestScreenProps) => {
               flexWrap: 'wrap',
               gap: 8,
             }}>
-            {INTERESTS.map(item => (
+            {interestData.result.map(item => (
               <Tag
-                key={item}
-                title={item}
-                selected={selectedInterests.includes(item)}
+                key={item.id}
+                title={item.name}
+                selected={selectedInterests.includes(item.id)}
                 onPressFn={() => {
-                  if (selectedInterests.includes(item)) {
+                  if (selectedInterests.includes(item.id)) {
                     setSelectedInterests(
-                      selectedInterests.filter(interest => interest !== item),
+                      selectedInterests.filter(
+                        interest => interest !== item.id,
+                      ),
                     );
                   } else if (selectedInterests.length < 3) {
-                    setSelectedInterests([...selectedInterests, item]);
+                    setSelectedInterests([...selectedInterests, item.id]);
                   }
                 }}
               />
@@ -66,6 +75,7 @@ const InterestScreen = ({navigation}: InterestScreenProps) => {
           title="완료"
           active={selectedInterests.length === 3}
           handlerFn={() => {
+            interestMutate(selectedInterests);
             navigation.navigate('SelecetColor');
           }}
         />
