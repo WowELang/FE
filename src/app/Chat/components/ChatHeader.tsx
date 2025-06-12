@@ -5,10 +5,17 @@ import {Pressable, StyleSheet, View} from 'react-native';
 import {Back} from '../../../assets';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
 import {ChatstackParamList} from '../../../navigators/ChatNavigator';
+import {CharacterType} from '../../../types/dto/UserProfileDto';
 
-const ChatHeader = () => {
+interface ChatHeaderProps {
+  character: CharacterType;
+  nickname: string;
+}
+
+const ChatHeader = ({character, nickname}: ChatHeaderProps) => {
   const navigation =
     useNavigation<StackNavigationProp<ChatstackParamList, 'Chat'>>();
   return (
@@ -17,9 +24,13 @@ const ChatHeader = () => {
         <Back fill={colors.gray.primary} />
       </Pressable>
       <View style={styles.profile}>
-        <Profile type="normal" color="red" size={48} />
+        <Profile
+          type={CHARACTERMASK[character.maskId]}
+          color={CHARACTERCOLOR[character.colorId]}
+          size={48}
+        />
         <Typography size={16} bold>
-          user
+          {nickname}
         </Typography>
       </View>
     </View>

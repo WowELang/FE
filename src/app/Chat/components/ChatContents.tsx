@@ -3,16 +3,21 @@ import {FlatList, Keyboard} from 'react-native';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
 
 import {useUser} from '../../../hooks/useUser';
+import {CharacterType} from '../../../types/dto/UserProfileDto';
 import {useMessageStore} from '../../../utils/messageStore';
 import Message from './Message';
 
 interface ChatContentsProps {
+  character: CharacterType;
+  nickname: string;
   onContentPress: () => void;
   messages: ChatMessageDto[];
   reachFn: () => void;
 }
 
 const ChatContents = ({
+  character,
+  nickname,
   onContentPress,
   messages,
   reachFn,
@@ -22,8 +27,8 @@ const ChatContents = ({
 
   const [skipTouch, setSkipTouch] = useState(false);
 
-  const {userProfileQuery} = useUser();
-  const {data: userData} = userProfileQuery;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
 
   const handleScrollBegin = () => {
     setIsScrolling(true);
@@ -61,6 +66,8 @@ const ChatContents = ({
             head={isHead}
             message={item}
             onLongPress={() => setSkipTouch(true)}
+            character={character}
+            nickname={nickname}
           />
         );
       }}

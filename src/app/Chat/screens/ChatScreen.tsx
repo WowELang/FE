@@ -2,7 +2,7 @@ import {RouteProp} from '@react-navigation/native';
 import React, {useCallback, useEffect, useRef, useState} from 'react';
 import {Keyboard, View} from 'react-native';
 import {getMessages} from '../../../api/chat';
-import {useAuth} from '../../../hooks/useAuth';
+import {useUser} from '../../../hooks/useUser';
 import {ChatstackParamList} from '../../../navigators/ChatNavigator';
 import {useStompClient} from '../../../socket';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
@@ -15,9 +15,9 @@ interface ChatScreenProps {
 }
 
 const ChatScreen = ({route}: ChatScreenProps) => {
-  const {roomId} = route.params;
-  const {userProfileQuery} = useAuth();
-  const {data} = userProfileQuery;
+  const {roomId, partnerData} = route.params;
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
   const stompClient = useStompClient();
 
   const [isMenuOpen, setIsMenuOpen] = useState(false);
@@ -52,22 +52,20 @@ const ChatScreen = ({route}: ChatScreenProps) => {
   // 초기 메시지 로드
   useEffect(() => {
     const loadInitialMessages = async () => {
-      try {
-        const initialMessages = await getMessages(
-          roomId,
-          data?.userId.toString(),
-        );
-        if (initialMessages && initialMessages.length > 0) {
-          setMessages(initialMessages);
+      if (userData) {
+        try {
+          const initialMessages = await getMessages(roomId);
+          if (initialMessages && initialMessages.length > 0) {
+            setMessages(initialMessages);
+          }
+        } catch (error) {
+          console.error('Error loading initial messages:', error);
         }
-      } catch (error) {
-        console.error('Error loading initial messages:', error);
-      } finally {
       }
     };
 
     loadInitialMessages();
-  }, [roomId, data?.userId]);
+  }, [roomId, userData]);
 
   // STOMP 연결 및 구독
   useEffect(() => {
@@ -122,11 +120,16 @@ const ChatScreen = ({route}: ChatScreenProps) => {
 
   return (
     <View style={{flex: 1, justifyContent: 'space-between'}}>
-      <ChatHeader />
+      <ChatHeader
+        character={partnerData.character}
+        nickname={partnerData.nickname}
+      />
       <ChatContents
         onContentPress={closeMenu}
         messages={messages}
         reachFn={reachStart}
+        character={partnerData.character}
+        nickname={partnerData.nickname}
       />
       <ChatInput
         isMenuOpen={isMenuOpen}

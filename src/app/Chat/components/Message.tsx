@@ -1,23 +1,40 @@
 import React, {useEffect, useRef, useState} from 'react';
-import {Image, Pressable, StyleSheet, View} from 'react-native';
+import {
+  ActivityIndicator,
+  Image,
+  Pressable,
+  StyleSheet,
+  View,
+} from 'react-native';
 import Divider from '../../../components/Divider';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
 import {useReceiveImage} from '../../../hooks/useChat';
 import {ChatMessageDto} from '../../../types/dto/ChatMessageDto';
+import {CharacterType} from '../../../types/dto/UserProfileDto';
 import {useMessageStore} from '../../../utils/messageStore';
 
 type MessageProps = {
   isMine?: boolean;
   head?: boolean;
   message: ChatMessageDto;
+  character: CharacterType;
+  nickname: string;
   onLongPress: () => void;
 };
 
 const MAX_IMAGE_WIDTH = 200;
 
-const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
+const Message = ({
+  isMine,
+  head,
+  message,
+  onLongPress,
+  character,
+  nickname,
+}: MessageProps) => {
   const correctMessage = useMessageStore(state => state.correctMessage);
   const addCorrectMessage = useMessageStore(state => state.addCorrectMessage);
 
@@ -29,7 +46,10 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
 
   const imageDimensionsRef = useRef(new Map());
 
-  const {data: imageData} = useReceiveImage(message.type, message.s3Key);
+  const {data: imageData, isFetching} = useReceiveImage(
+    message.type,
+    message.s3Key,
+  );
   useEffect(() => {
     if (imageData && !imageDimensionsRef.current.has(imageData.data.url)) {
       Image.getSize(
@@ -61,9 +81,7 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
       setImageDimensions(imageDimensionsRef.current.get(imageData?.data.url));
     }
   }, [imageData]);
-  useEffect(() => {
-    console.log('message::::::::', message);
-  });
+
   return (
     <View
       style={[
@@ -72,23 +90,32 @@ const Message = ({isMine, head, message, onLongPress}: MessageProps) => {
       ]}>
       {!isMine && head && (
         <View style={{flexDirection: 'row', alignItems: 'center', gap: 12}}>
-          <Profile type="normal" color="pink" size={36} />
+          <Profile
+            type={CHARACTERMASK[character.maskId]}
+            color={CHARACTERCOLOR[character.colorId]}
+            size={36}
+          />
           <Typography size={12} bold>
-            {message.senderId}
+            {nickname}
           </Typography>
         </View>
       )}
       {imageData ? (
-        <Image
-          src={imageData.data.url}
-          style={{
-            width: imageDimensions?.width,
-            height: imageDimensions?.height,
-            maxHeight: 500,
-            borderRadius: 5,
-          }}
-          resizeMode="contain"
-        />
+        isFetching ? (
+          <ActivityIndicator />
+        ) : (
+          <Image
+            src={imageData.data.url}
+            style={{
+              width: imageDimensions?.width,
+              height: imageDimensions?.height,
+              maxHeight: 500,
+              borderRadius: 5,
+              marginLeft: 40,
+            }}
+            resizeMode="contain"
+          />
+        )
       ) : (
         <View>
           <Pressable
