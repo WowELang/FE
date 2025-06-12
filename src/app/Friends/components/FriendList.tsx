@@ -1,23 +1,25 @@
-import React from 'react';
+import React, {useEffect} from 'react';
 import {FlatList} from 'react-native';
+import {useFriend} from '../../../hooks/useChat';
 import FriendItem from './FriendItem';
 
 const FriendList = () => {
+  const {frienListQuery} = useFriend();
+  const {data, error} = frienListQuery;
+  useEffect(() => {
+    console.log(data);
+    console.log(error);
+  });
   return (
     <FlatList
-      data={[
-        {
-          name: '홍대앞 규동',
-          dept: '일본',
-          interests: ['춤', '산책', '등산'],
-          date: '3/23',
-        },
-      ]}
+      data={data}
       renderItem={({item}) => (
         <FriendItem
-          name={item.name}
-          dept={item.dept}
-          interests={item.interests}
+          id={item.userId}
+          name={item.nickname}
+          major={item.major}
+          interests={item.interest}
+          character={{colorId: item.color, maskId: item.mask}}
         />
       )}
     />

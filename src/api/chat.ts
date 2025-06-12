@@ -1,6 +1,9 @@
 import axios from 'axios';
+import {UserType} from './../types/dto/UserSignupReqDto';
 
+import {useMutation, useQuery} from '@tanstack/react-query';
 import {Asset} from 'react-native-image-picker';
+import {useUser} from '../hooks/useUser';
 import {ChatMessageDto} from '../types/dto/ChatMessageDto';
 import {ChatRoomDto} from '../types/dto/ChatRoomDto';
 import {axiosChatInstance} from './axios';
@@ -47,7 +50,7 @@ export const postImage = async (image: Asset) => {
   );
   if (s3Status === 200) {
     try {
-      const {data, status} = await axios.put(s3Data.url, binaryData, {
+      const {status} = await axios.put(s3Data.url, binaryData, {
         headers: {
           'Content-Type': image.type,
         },
@@ -68,6 +71,67 @@ export const getImage = async (key: string) => {
 };
 
 export const getRoomList = async (): Promise<ChatRoomDto[]> => {
-  const {data} = await axiosChatInstance.get(`rooms`);
-  return data;
+  const response = await axiosChatInstance.get(`rooms`);
+  return response.data;
+};
+
+export const getFriendList = async (userId: number, userType: UserType) => {
+  const response = await axios.get(
+    `http://3.36.209.182:8000/api/matching/list?userId=${userId}&userType=${userType}`,
+  );
+  return response.data;
+};
+
+export const getFriendRequestList = async () => {
+  const response = await axiosChatInstance.get(`/matches?status=PENDING`);
+  return response.data;
+};
+
+export const postFriendRequest = async (targetId: number) => {
+  const response = await axiosChatInstance.post(`/matches/${targetId}`);
+  return response.data;
+};
+
+export const postFriendResponse = async ({
+  requestId,
+  state,
+}: {
+  requestId: string;
+  state: 'accept' | 'reject';
+}) => {
+  const response = await axiosChatInstance.post(
+    `/matches/${requestId}/${state}`,
+  );
+  return response.data;
+};
+
+export const useFriend = () => {
+  const {myProfileQuery} = useUser();
+  const {data: userData} = myProfileQuery;
+
+  const frienListQuery = useQuery({
+    queryKey: ['friend'],
+    queryFn: () => getFriendList(userData.userId, userData.usertype),
+    enabled: !!userData,
+  });
+
+  const friendListRequestQuery = useQuery({
+    queryKey: ['friend', 'request'],
+    queryFn: getFriendRequestList,
+    enabled: !!userData,
+  });
+
+  const friendRequestMutation = useMutation({
+    mutationFn: postFriendRequest,
+  });
+  const friendResponseMutation = useMutation({
+    mutationFn: postFriendResponse,
+  });
+
+  return {
+    frienListQuery,
+    friendListRequestQuery,
+    friendRequestMutation,
+    friendResponseMutation,
+  };
 };
