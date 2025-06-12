@@ -72,7 +72,7 @@ export const useUser = () => {
 
 export const useProfile = (userId: number) => {
   const userProfileQuery = useQuery({
-    queryKey: ['user', 'profile', 'other'],
+    queryKey: ['user', 'profile', userId],
     queryFn: () => getUserProfile(userId),
     enabled: !!axiosApiInstance.defaults.headers.common.Authorization,
   });
