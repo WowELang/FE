@@ -48,7 +48,7 @@ const StartScreen = ({navigation}: StartScreenProps) => {
           active
           handlerFn={() => {
             queryClient.invalidateQueries({
-              queryKey: ['user', 'auth', 'profile'],
+              queryKey: ['user', 'profile'],
             });
           }}
         />
