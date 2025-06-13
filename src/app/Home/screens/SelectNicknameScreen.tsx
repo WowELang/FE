@@ -56,7 +56,7 @@ const SelectNicknameScreen = ({navigation}: SelectNicknameScreenProps) => {
           active={!!nickname}
           handlerFn={() => {
             nicknameMutate(nickname);
-            navigation.navigate('Start');
+            navigation.navigate('Start', {nickname: nickname});
           }}
         />
       </View>

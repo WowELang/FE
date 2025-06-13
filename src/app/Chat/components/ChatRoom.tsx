@@ -76,7 +76,7 @@ const ChatRoom = ({
             </Typography>
           </View>
           <Typography size={12} numberOfLines={1}>
-            {lastMessage.type === 'IMAGE' ? '(사진)' : lastMessage?.content}
+            {lastMessage?.type === 'IMAGE' ? '(사진)' : lastMessage?.content}
           </Typography>
         </View>
       </Pressable>

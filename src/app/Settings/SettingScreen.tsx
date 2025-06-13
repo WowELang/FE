@@ -51,7 +51,11 @@ const SettingScreen = () => {
               }`}</Typography>
               <View style={{flexDirection: 'row'}}>
                 {userData.interests.map(item => (
-                  <Typography size={12} color={colors.blue.primary} bold>
+                  <Typography
+                    size={12}
+                    color={colors.blue.primary}
+                    bold
+                    key={`interest-${item.name}`}>
                     {`# ${item.name}`}
                   </Typography>
                 ))}
