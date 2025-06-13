@@ -1,7 +1,9 @@
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
+import {queryClient} from '../../../../App';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
+import {CHARACTERCOLOR, CHARACTERMASK} from '../../../constants/character';
 import {colors} from '../../../constants/colors';
 import {useFriend} from '../../../hooks/useChat';
 import {useProfile} from '../../../hooks/useUser';
@@ -34,7 +36,11 @@ const RequestItem = ({
       <View style={styles.box}>
         <View style={{flexDirection: 'row', justifyContent: 'space-between'}}>
           <View style={{flexDirection: 'row', gap: 22}}>
-            <Profile size={60} color="pink" type="normal" />
+            <Profile
+              size={60}
+              color={CHARACTERCOLOR[data.result.character.colorId]}
+              type={CHARACTERMASK[data.result.character.maskId]}
+            />
             <View style={{gap: 10}}>
               <Typography size={16} bold numberOfLines={1} style={{width: 180}}>
                 {data.result.nickname}
@@ -77,6 +83,7 @@ const RequestItem = ({
             style={[styles.button, {backgroundColor: colors.gray.primary}]}
             onPress={() => {
               mutate({requestId: requestId, state: 'reject'});
+              queryClient.invalidateQueries({queryKey: ['friend', 'request']});
               modalHandler({
                 isOpen: true,
                 nickname: data.result.nickname,

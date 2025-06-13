@@ -51,24 +51,25 @@ const InterestScreen = ({navigation}: InterestScreenProps) => {
               flexWrap: 'wrap',
               gap: 8,
             }}>
-            {interestData.result.map(item => (
-              <Tag
-                key={item.id}
-                title={item.name}
-                selected={selectedInterests.includes(item.id)}
-                onPressFn={() => {
-                  if (selectedInterests.includes(item.id)) {
-                    setSelectedInterests(
-                      selectedInterests.filter(
-                        interest => interest !== item.id,
-                      ),
-                    );
-                  } else if (selectedInterests.length < 3) {
-                    setSelectedInterests([...selectedInterests, item.id]);
-                  }
-                }}
-              />
-            ))}
+            {interestData &&
+              interestData.result.map(item => (
+                <Tag
+                  key={item.id}
+                  title={item.name}
+                  selected={selectedInterests.includes(item.id)}
+                  onPressFn={() => {
+                    if (selectedInterests.includes(item.id)) {
+                      setSelectedInterests(
+                        selectedInterests.filter(
+                          interest => interest !== item.id,
+                        ),
+                      );
+                    } else if (selectedInterests.length < 3) {
+                      setSelectedInterests([...selectedInterests, item.id]);
+                    }
+                  }}
+                />
+              ))}
           </View>
         </View>
         <ConfirmButton

@@ -87,11 +87,13 @@ const RequestModal = ({isOpen, closeFn, nickname, type}: RequestModalProps) => {
                 <ConfirmButton
                   title="다시 한 번 생각해볼게요."
                   active
-                  handlerFn={() => {}}
+                  handlerFn={closeFn}
                 />
                 <ConfirmButton
                   title="네, 친구를 거부할게요."
-                  handlerFn={() => {}}
+                  handlerFn={() => {
+                    closeFn();
+                  }}
                 />
               </View>
             )}

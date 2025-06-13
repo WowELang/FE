@@ -41,42 +41,46 @@ const ChatRoom = ({
       ? participants[1]
       : participants[0];
   const {data: otherData} = useProfile(parseInt(otherId));
+
   useEffect(() => {
-    console.log(otherData);
-  }, [otherData]);
+    console.log('partner', otherId, otherData);
+  }, [otherData, otherId]);
+
   return (
-    <Pressable
-      style={styles.container}
-      onPress={() => {
-        navigation.navigate('Chat', {
-          roomId: id,
-          partnerData: otherData.result,
-        });
-      }}>
-      <Profile
-        type={CHARACTERMASK[otherData?.result.character.maskId]}
-        color={CHARACTERCOLOR[otherData?.result.character.colorId]}
-        size={48}
-      />
-      <View style={styles.contentWrapper}>
-        <View style={styles.roomInfo}>
-          <View style={styles.userInfo}>
-            <Typography size={12} bold>
-              {otherData.result?.nickname}
-            </Typography>
-            <Typography size={10} color={colors.gray.primary}>
-              {otherData.result?.countryOrMajor}
+    otherData && (
+      <Pressable
+        style={styles.container}
+        onPress={() => {
+          navigation.navigate('Chat', {
+            roomId: id,
+            partnerData: otherData.result,
+          });
+        }}>
+        <Profile
+          type={CHARACTERMASK[otherData?.result.character.maskId]}
+          color={CHARACTERCOLOR[otherData?.result.character.colorId]}
+          size={48}
+        />
+        <View style={styles.contentWrapper}>
+          <View style={styles.roomInfo}>
+            <View style={styles.userInfo}>
+              <Typography size={12} bold>
+                {otherData.result?.nickname}
+              </Typography>
+              <Typography size={10} color={colors.gray.primary}>
+                {otherData.result?.countryOrMajor}
+              </Typography>
+            </View>
+            <Typography size={12} color={colors.gray.primary}>
+              {getLastTime(updatedAt)}
             </Typography>
           </View>
-          <Typography size={12} color={colors.gray.primary}>
-            {getLastTime(updatedAt)}
+          <Typography size={12} numberOfLines={1}>
+            {lastMessage?.type === 'IMAGE' ? '(사진)' : lastMessage?.content}
           </Typography>
         </View>
-        <Typography size={12} numberOfLines={1}>
-          {lastMessage.type === 'IMAGE' ? '(사진)' : lastMessage?.content}
-        </Typography>
-      </View>
-    </Pressable>
+      </Pressable>
+    )
   );
 };
 

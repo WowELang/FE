@@ -1,3 +1,4 @@
+import {RouteProp} from '@react-navigation/native';
 import {StackNavigationProp} from '@react-navigation/stack';
 import React from 'react';
 import {Pressable, StyleSheet, View} from 'react-native';
@@ -7,14 +8,14 @@ import ConfirmButton from '../../../components/ConfirmButton';
 import Profile from '../../../components/Profile';
 import Typography from '../../../components/Typography';
 import {colors} from '../../../constants/colors';
-import {LoginStackParamList} from '../../../navigators/LoginNavigator';
+import {InitialSelectStackParamList} from '../../../navigators/InitialSelectNavigator';
 
 interface StartScreenProps {
-  navigation: StackNavigationProp<LoginStackParamList, 'Start'>;
+  navigation: StackNavigationProp<InitialSelectStackParamList, 'Start'>;
+  route: RouteProp<InitialSelectStackParamList, 'Start'>;
 }
-const StartScreen = ({navigation}: StartScreenProps) => {
-  const nickname = '후비적거리는 홍냥이';
-
+const StartScreen = ({navigation, route}: StartScreenProps) => {
+  const nickname = route.params.nickname;
   return (
     <View style={styles.container}>
       <Pressable

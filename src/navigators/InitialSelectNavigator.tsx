@@ -11,7 +11,7 @@ export type InitialSelectStackParamList = {
   SelecetColor: undefined;
   SelecetFace: {color: number};
   SelectNickname: undefined;
-  Start: undefined;
+  Start: {nickname: string};
 };
 const InitialSelectStack = createStackNavigator<InitialSelectStackParamList>();
 const InitialSelectNavigator = () => {
